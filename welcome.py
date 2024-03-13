@@ -1,0 +1,2 @@
+class Welcome:
+    pass
