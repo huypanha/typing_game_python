@@ -1,16 +1,13 @@
 import pygame
 from menu_state import MenuState
+from infrastructure import singleton as st
 
 pygame.init()
 
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-GAME_SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+singleton = st.Singleton.instance()
 pygame.display.set_caption("Angkor Typing Game")
 
-menu_state = MenuState(GAME_SCREEN, WINDOW_WIDTH, WINDOW_HEIGHT)
-
-current_state = menu_state
+current_state = MenuState(singleton)
 FPS = 60
 
 running = True
