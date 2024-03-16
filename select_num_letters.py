@@ -4,7 +4,7 @@ from enter_name import EnterNameState
 from utils import scale_img_width as siw
 
 
-class MenuState:
+class SelectNumLevel:
     def __init__(self, singleton):
         self.singleton = singleton
         self.next_state = None

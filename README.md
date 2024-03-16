@@ -1,0 +1,3 @@
+# Typing Game
+
+## Get Started
