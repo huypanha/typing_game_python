@@ -4,10 +4,13 @@ import pygame
 class Singleton:
     _instance = None
     _user_name = None
-    _selected_character_index = None
+    _selected_character_index = 0
+    _selected_num_letters = 3
+
+    # sound
     _default_sound = None
     _birds_sound = None
-    _num_sound_channel = 2
+    _num_sound_channel = 3
     _default_sound_channel = None
     _birds_sound_channel = None
 
@@ -44,20 +47,27 @@ class Singleton:
     def get_user_name(self):
         return self._user_name
 
-    def get_default_sound(self):
-        return self._default_sound
+    def set_character(self, index):
+        self._selected_character_index = index
 
-    def set_default_sound(self, new_sound):
-        self._default_sound = new_sound
+    def get_character_index(self):
+        return self._selected_character_index
 
-    def get_birds_sound(self):
-        return self._birds_sound
+    def set_num_letters(self, value):
+        self._selected_num_letters = value
+
+    def get_num_letters(self):
+        return self._selected_num_letters
 
     def set_birds_sound(self, new_sound):
         self._birds_sound = new_sound
 
     def play_default_sound(self):
-        self._default_sound_channel.play(self._default_sound)
+        self._default_sound_channel.play(self._default_sound, loops=-1)
 
     def play_birds_sound(self):
-        self._birds_sound_channel.play(self._birds_sound)
+        self._birds_sound_channel.play(self._birds_sound, loops=-1)
+
+    @staticmethod
+    def play_click_button():
+        pygame.mixer.Channel(2).play(pygame.mixer.Sound("media/sounds/button_click.ogg"))

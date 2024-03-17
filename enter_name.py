@@ -17,7 +17,7 @@ class EnterNameState:
         self.font = pygame.font.Font('fonts/SubwayCircleDemo.otf', 30)
 
         # background
-        self.back_img = pygame.image.load('media/menu/back.jpg').convert()
+        self.back_img = pygame.image.load('media/back.jpg').convert()
         self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
 
         # get name background
@@ -45,6 +45,7 @@ class EnterNameState:
             if event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
                 if self.get_name_result != 'Enter your name' and len(self.get_name_result) >= 3:
                     self.clicked_submit_button = True
+                    self.singleton.play_click_button()
             elif event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE:
                 self.get_name_result = self.get_name_result[:-1]
             else:
@@ -61,6 +62,7 @@ class EnterNameState:
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.submit_button_img.get_height():
                 if self.get_name_result != 'Enter your name' and len(self.get_name_result) >= 3:
                     self.clicked_submit_button = True
+                self.singleton.play_click_button()
 
     def update(self):
         if self.get_name_back_y < 0 and not self.clicked_submit_button:

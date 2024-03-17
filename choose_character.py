@@ -1,6 +1,7 @@
 import pygame
 
 from utils import scale_img_width as siw
+from select_num_letters import SelectNumLetters
 
 
 class ChooseCharacterState:
@@ -12,7 +13,7 @@ class ChooseCharacterState:
         self.singleton = singleton
 
         # background
-        self.back_img = pygame.image.load('media/menu/back.jpg').convert()
+        self.back_img = pygame.image.load('media/back.jpg').convert()
         self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
 
         # title
@@ -54,6 +55,7 @@ class ChooseCharacterState:
             if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.submit_button_img.get_width() and \
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.submit_button_img.get_height():
                 self.clicked_submit_button = True
+                self.singleton.play_click_button()
 
             # handle click for first character
             if self.ch1_back_pos_x <= event.pos[0] <= self.ch1_back_pos_x + self.ch_1_back_img.get_width() and \
@@ -63,6 +65,7 @@ class ChooseCharacterState:
                 self.ch_2_back_img = siw.scale_img_width(
                     pygame.image.load('media/choose_character/back.png').convert_alpha(), 450)
                 self.selected_index = 0
+                self.singleton.play_click_button()
 
             # handle click for second character
             if self.ch2_back_pos_x <= event.pos[0] <= self.ch2_back_pos_x + self.ch_2_back_img.get_width() and \
@@ -72,6 +75,7 @@ class ChooseCharacterState:
                 self.ch_1_back_img = siw.scale_img_width(
                     pygame.image.load('media/choose_character/back.png').convert_alpha(), 450)
                 self.selected_index = 1
+                self.singleton.play_click_button()
 
     def update(self):
         # animate title
@@ -86,8 +90,8 @@ class ChooseCharacterState:
         elif self.ch_back_pos_y >= -450 and self.clicked_submit_button:
             self.ch_back_pos_y -= 20
             if self.clicked_submit_button and self.ch_back_pos_y <= -450:
-                self.singleton.set_user_name(self.ch_back_pos_y)
-                self.next_state = ChooseCharacterState(self.singleton)
+                self.singleton.set_character(self.selected_index)
+                self.next_state = SelectNumLetters(self.singleton)
 
         # animate character
         if self.ch_pos_y < 270 and not self.clicked_submit_button:

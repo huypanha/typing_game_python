@@ -1,5 +1,5 @@
 import pygame
-from menu_state import MenuState
+from start_state import StartState
 from infrastructure import singleton as st
 
 pygame.init()
@@ -7,7 +7,7 @@ pygame.init()
 singleton = st.Singleton.instance()
 pygame.display.set_caption("Angkor Typing Game")
 
-current_state = MenuState(singleton)
+current_state = StartState(singleton)
 FPS = 60
 
 running = True

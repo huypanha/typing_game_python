@@ -4,18 +4,18 @@ from enter_name import EnterNameState
 from utils import scale_img_width as siw
 
 
-class MenuState:
+class StartState:
     def __init__(self, singleton):
         self.singleton = singleton
         self.next_state = None
         self.clicked_play_button = False
 
         # background
-        self.back_img = pygame.image.load('media/menu/back.jpg').convert()
+        self.back_img = pygame.image.load('media/back.jpg').convert()
         self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
 
         # game text logo
-        self.logo_img = siw.scale_img_width(pygame.image.load('media/menu/logo.png').convert_alpha(), 1000)
+        self.logo_img = siw.scale_img_width(pygame.image.load('media/logo.png').convert_alpha(), 1000)
 
         self.animation_speed = 15
 
@@ -23,7 +23,7 @@ class MenuState:
         self.logo_pos_y = -300
 
         # play button
-        self.play_button_img = siw.scale_img_width(pygame.image.load('media/menu/play_button.png').convert_alpha(), 150)
+        self.play_button_img = siw.scale_img_width(pygame.image.load('media/play_button.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_button_img.get_width() / 2)
@@ -36,6 +36,7 @@ class MenuState:
             if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_button_img.get_width() and \
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_button_img.get_height():
                 self.clicked_play_button = True
+                self.singleton.play_click_button()
 
     def update(self):
         if self.logo_pos_y < 50 and not self.clicked_play_button:

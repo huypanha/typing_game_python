@@ -1,59 +1,152 @@
-import pygame.image
+import pygame
 
-from enter_name import EnterNameState
 from utils import scale_img_width as siw
 
 
-class SelectNumLevel:
+class SelectNumLetters:
+    next_state = None
+    clicked_play_button = None
+
     def __init__(self, singleton):
         self.singleton = singleton
-        self.next_state = None
-        self.clicked_play_button = False
 
         # background
-        self.back_img = pygame.image.load('media/menu/back.jpg').convert()
+        self.back_img = pygame.image.load('media/back.jpg').convert()
         self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
 
-        # game text logo
-        self.logo_img = siw.scale_img_width(pygame.image.load('media/menu/logo.png').convert_alpha(), 1000)
+        # title
+        self.title_img = siw.scale_img_width(
+            pygame.image.load('media/select_letters/select_letter_title.png').convert_alpha(), 800)
 
-        self.animation_speed = 15
+        # letters button
+        self.btn3_letters = siw.scale_img_width(
+            pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 200)
+        self.btn4_letters = siw.scale_img_width(
+            pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 200)
+        self.btn5_letters = siw.scale_img_width(
+            pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 200)
+        self.btn6_letters = siw.scale_img_width(
+            pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 200)
 
-        # animate logo
-        self.logo_pos_y = -300
+        # animate
+        self.row1_btn_pos_y = -350
+        self.row2_btn_pos_y = -250
+        self.title_img_pos_y = -200
 
         # play button
-        self.play_button_img = siw.scale_img_width(pygame.image.load('media/menu/play_button.png').convert_alpha(), 150)
+        self.play_btn_img = siw.scale_img_width(
+            pygame.image.load('media/play_button.png').convert_alpha(), 150)
 
         # use for handle click event
-        self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_button_img.get_width() / 2)
+        self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_btn_img.get_width() / 2)
+        self.left_pos_x = (self.singleton.get_screen_size()[0] / 2) - 300
+        self.right_pos_x = (self.singleton.get_screen_size()[0] / 2) + 100
 
         # animate button
         self.button_pos_y = 800
 
     def handle_events(self, event):
+        # handle click button
         if event.type == pygame.MOUSEBUTTONUP:
-            if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_button_img.get_width() and \
-                    self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_button_img.get_height():
+            if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_btn_img.get_width() and \
+                    self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_btn_img.get_height():
                 self.clicked_play_button = True
+                self.singleton.play_click_button()
+
+            # handle click for 3 letters
+            if self.left_pos_x <= event.pos[0] <= self.left_pos_x + self.btn3_letters.get_width() and \
+                    self.row1_btn_pos_y <= event.pos[1] <= self.row1_btn_pos_y + self.btn3_letters.get_height():
+                self.change_select_button(3)
+                self.singleton.play_click_button()
+
+            # handle click for 4 letters
+            if self.right_pos_x <= event.pos[0] <= self.right_pos_x + self.btn4_letters.get_width() and \
+                    self.row1_btn_pos_y <= event.pos[1] <= self.row1_btn_pos_y + self.btn4_letters.get_height():
+                self.change_select_button(4)
+                self.singleton.play_click_button()
+
+            # handle click for 5 letters
+            if self.left_pos_x <= event.pos[0] <= self.left_pos_x + self.btn5_letters.get_width() and \
+                    self.row2_btn_pos_y <= event.pos[1] <= self.row2_btn_pos_y + self.btn5_letters.get_height():
+                self.change_select_button(5)
+                self.singleton.play_click_button()
+
+            # handle click for 6 letters
+            if self.right_pos_x <= event.pos[0] <= self.right_pos_x + self.btn6_letters.get_width() and \
+                    self.row2_btn_pos_y <= event.pos[1] <= self.row2_btn_pos_y + self.btn6_letters.get_height():
+                self.change_select_button(6)
+                self.singleton.play_click_button()
+
+    def change_select_button(self, new_number):
+        # change old selected button to normal state
+        if self.singleton.get_num_letters() == 3:
+            self.btn3_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 200)
+        elif self.singleton.get_num_letters() == 4:
+            self.btn4_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 200)
+        elif self.singleton.get_num_letters() == 5:
+            self.btn5_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 200)
+        elif self.singleton.get_num_letters() == 6:
+            self.btn6_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 200)
+
+        # change new selected button to selected state
+        if new_number == 3:
+            self.btn3_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/3_letters_selected.png').convert_alpha(), 200)
+        elif new_number == 4:
+            self.btn4_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/4_letters_selected.png').convert_alpha(), 200)
+        elif new_number == 5:
+            self.btn5_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/5_letters_selected.png').convert_alpha(), 200)
+        elif new_number == 6:
+            self.btn6_letters = siw.scale_img_width(
+                pygame.image.load('media/select_letters/6_letters_selected.png').convert_alpha(), 200)
+
+        # update new selected letter number
+        self.singleton.set_num_letters(new_number)
 
     def update(self):
-        if self.logo_pos_y < 50 and not self.clicked_play_button:
-            self.logo_pos_y += self.animation_speed
-        elif self.logo_pos_y >= -300 and self.clicked_play_button:
-            self.logo_pos_y -= self.animation_speed
+        # animate title
+        if self.title_img_pos_y < 50 and not self.clicked_play_button:
+            self.title_img_pos_y += 10
+        elif self.title_img_pos_y >= -200 and self.clicked_play_button:
+            self.title_img_pos_y -= 10
 
+        # animate letter button
+        if self.row1_btn_pos_y < 200 and not self.clicked_play_button:
+            self.row1_btn_pos_y += 20
+        elif self.row1_btn_pos_y >= -350 and self.clicked_play_button:
+            self.row1_btn_pos_y -= 20
+
+        # animate character background
+        if self.row2_btn_pos_y < 300 and not self.clicked_play_button:
+            self.row2_btn_pos_y += 20
+        elif self.row2_btn_pos_y >= -250 and self.clicked_play_button:
+            self.row2_btn_pos_y -= 20
+            if self.clicked_play_button and self.row2_btn_pos_y <= -250:
+                self.next_state = SelectNumLetters(self.singleton)
+
+        # animate button submit
         if self.button_pos_y > 500 and not self.clicked_play_button:
-            self.button_pos_y -= self.animation_speed
+            self.button_pos_y -= 10
         elif self.button_pos_y <= 800 and self.clicked_play_button:
-            self.button_pos_y += self.animation_speed
-
-        if self.clicked_play_button and self.logo_pos_y <= -300:
-            self.next_state = EnterNameState(self.singleton)
+            self.button_pos_y += 10
 
     def draw(self):
         self.singleton.get_screen().blit(self.back_img, (0, 0))
-        self.singleton.get_screen().blit(self.logo_img,
-                         ((self.singleton.get_screen_size()[0] / 2) - (self.logo_img.get_width() / 2), self.logo_pos_y))
-        self.singleton.get_screen().blit(self.play_button_img,
-                         (self.button_pos_x, self.button_pos_y))
+        self.singleton.get_screen().blit(self.title_img,
+                                         ((self.singleton.get_screen_size()[0] / 2) - (
+                                                 self.title_img.get_width() / 2), self.title_img_pos_y))
+
+        # draw letter button
+        self.singleton.get_screen().blit(self.btn3_letters, (self.left_pos_x, self.row1_btn_pos_y))
+        self.singleton.get_screen().blit(self.btn4_letters, (self.right_pos_x, self.row1_btn_pos_y))
+        self.singleton.get_screen().blit(self.btn5_letters, (self.left_pos_x, self.row2_btn_pos_y))
+        self.singleton.get_screen().blit(self.btn6_letters, (self.right_pos_x, self.row2_btn_pos_y))
+
+        self.singleton.get_screen().blit(self.play_btn_img,
+                                         (self.button_pos_x, self.button_pos_y))
