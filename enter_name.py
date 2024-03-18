@@ -67,9 +67,9 @@ class EnterNameState:
     def update(self):
         if self.get_name_back_y < 0 and not self.clicked_submit_button:
             self.get_name_back_y += 15
-        elif self.get_name_back_y >= -450 and self.clicked_submit_button:
+        elif self.get_name_back_y >= -500 and self.clicked_submit_button:
             self.get_name_back_y -= 15
-            if self.clicked_submit_button and self.get_name_back_y <= -450:
+            if self.clicked_submit_button and self.get_name_back_y <= -500:
                 self.singleton.set_user_name(self.get_name_result)
                 self.next_state = ChooseCharacterState(self.singleton)
 

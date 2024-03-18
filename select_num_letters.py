@@ -20,17 +20,19 @@ class SelectNumLetters:
 
         # letters button
         self.btn3_letters = siw.scale_img_width(
-            pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 200)
+            pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 300)
         self.btn4_letters = siw.scale_img_width(
-            pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 200)
+            pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 300)
         self.btn5_letters = siw.scale_img_width(
-            pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 200)
+            pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 300)
         self.btn6_letters = siw.scale_img_width(
-            pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 200)
+            pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 300)
+
+        self.change_select_button(self.singleton.get_num_letters())
 
         # animate
         self.row1_btn_pos_y = -350
-        self.row2_btn_pos_y = -250
+        self.row2_btn_pos_y = -300
         self.title_img_pos_y = -200
 
         # play button
@@ -39,8 +41,8 @@ class SelectNumLetters:
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_btn_img.get_width() / 2)
-        self.left_pos_x = (self.singleton.get_screen_size()[0] / 2) - 300
-        self.right_pos_x = (self.singleton.get_screen_size()[0] / 2) + 100
+        self.left_pos_x = (self.singleton.get_screen_size()[0] / 2) - 350
+        self.right_pos_x = (self.singleton.get_screen_size()[0] / 2) + 50
 
         # animate button
         self.button_pos_y = 800
@@ -81,30 +83,30 @@ class SelectNumLetters:
         # change old selected button to normal state
         if self.singleton.get_num_letters() == 3:
             self.btn3_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/3_letters.png').convert_alpha(), 300)
         elif self.singleton.get_num_letters() == 4:
             self.btn4_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/4_letters.png').convert_alpha(), 300)
         elif self.singleton.get_num_letters() == 5:
             self.btn5_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/5_letters.png').convert_alpha(), 300)
         elif self.singleton.get_num_letters() == 6:
             self.btn6_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/6_letters.png').convert_alpha(), 300)
 
         # change new selected button to selected state
         if new_number == 3:
             self.btn3_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/3_letters_selected.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/3_letters_selected.png').convert_alpha(), 300)
         elif new_number == 4:
             self.btn4_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/4_letters_selected.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/4_letters_selected.png').convert_alpha(), 300)
         elif new_number == 5:
             self.btn5_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/5_letters_selected.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/5_letters_selected.png').convert_alpha(), 300)
         elif new_number == 6:
             self.btn6_letters = siw.scale_img_width(
-                pygame.image.load('media/select_letters/6_letters_selected.png').convert_alpha(), 200)
+                pygame.image.load('media/select_letters/6_letters_selected.png').convert_alpha(), 300)
 
         # update new selected letter number
         self.singleton.set_num_letters(new_number)
@@ -122,8 +124,8 @@ class SelectNumLetters:
         elif self.row1_btn_pos_y >= -350 and self.clicked_play_button:
             self.row1_btn_pos_y -= 20
 
-        # animate character background
-        if self.row2_btn_pos_y < 300 and not self.clicked_play_button:
+        # animate letter button row 2
+        if self.row2_btn_pos_y < 350 and not self.clicked_play_button:
             self.row2_btn_pos_y += 20
         elif self.row2_btn_pos_y >= -250 and self.clicked_play_button:
             self.row2_btn_pos_y -= 20

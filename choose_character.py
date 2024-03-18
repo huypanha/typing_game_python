@@ -27,15 +27,26 @@ class ChooseCharacterState:
             pygame.image.load('media/choose_character/back.png').convert_alpha(), 450)
 
         # character
-        self.ch1 = siw.scale_img_width(
-            pygame.image.load('media/choose_character/img.jpeg').convert(), 300)
-        self.ch2 = siw.scale_img_width(
-            pygame.image.load('media/choose_character/img.jpeg').convert(), 300)
+        self.ch1_seq = []
+        for i in range(120):
+            self.ch1_seq.append(siw.scale_img_width(pygame.image.load('media/characters/Monkey/Comp 1_{}.png'
+                                                                      .format(str(i).rjust(5, "0"))).convert_alpha(),
+                                                    1000))
+        self.current_frame_ch1 = 0
+        self.ch1 = self.ch1_seq[self.current_frame_ch1]
+
+        self.ch2_seq = []
+        for i in range(120):
+            self.ch2_seq.append(siw.scale_img_width(pygame.image.load('media/characters/Rabbit/Comp 2_{}.png'
+                                                                      .format(str(i).rjust(5, "0"))).convert_alpha(),
+                                                    1000))
+        self.current_frame_ch2 = 0
+        self.ch2 = self.ch2_seq[self.current_frame_ch2]
 
         # animate
         self.ch_back_pos_y = -450
         self.title_text_pos_y = -200
-        self.ch_pos_y = -350
+        self.ch_pos_y = -1000
 
         # play button
         self.submit_button_img = siw.scale_img_width(
@@ -90,11 +101,14 @@ class ChooseCharacterState:
         elif self.ch_back_pos_y >= -450 and self.clicked_submit_button:
             self.ch_back_pos_y -= 20
             if self.clicked_submit_button and self.ch_back_pos_y <= -450:
-                self.singleton.set_character(self.selected_index)
+                if self.selected_index == 0:
+                    self.singleton.set_character(self.ch1_seq)
+                elif self.selected_index == 1:
+                    self.singleton.set_character(self.ch2_seq)
                 self.next_state = SelectNumLetters(self.singleton)
 
         # animate character
-        if self.ch_pos_y < 270 and not self.clicked_submit_button:
+        if self.ch_pos_y < 100 and not self.clicked_submit_button:
             self.ch_pos_y += 20
         elif self.ch_pos_y >= -400 and self.clicked_submit_button:
             self.ch_pos_y -= 20
@@ -105,10 +119,17 @@ class ChooseCharacterState:
         elif self.button_pos_y <= 800 and self.clicked_submit_button:
             self.button_pos_y += 10
 
+        # animate character 1
+        self.ch1 = self.ch1_seq[self.current_frame_ch1]
+        self.current_frame_ch1 = (self.current_frame_ch1 + 1) % len(self.ch1_seq)
+
+        # animate character 2
+        self.ch2 = self.ch2_seq[self.current_frame_ch2]
+        self.current_frame_ch2 = (self.current_frame_ch2 + 1) % len(self.ch2_seq)
+
     def draw(self):
         self.singleton.get_screen().blit(self.back_img, (0, 0))
-        self.singleton.get_screen().blit(self.title_text,
-                                         ((self.singleton.get_screen_size()[0] / 2) - (
+        self.singleton.get_screen().blit(self.title_text, ((self.singleton.get_screen_size()[0] / 2) - (
                                                  self.title_text.get_width() / 2), self.title_text_pos_y))
 
         # draw character background
@@ -118,8 +139,7 @@ class ChooseCharacterState:
         # draw character
         self.singleton.get_screen().blit(self.ch1, ((self.singleton.get_screen_size()[0] / 4) -
                                                     (self.ch1.get_width() / 2), self.ch_pos_y))
-        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] / 1.93) +
-                                                    (self.ch2.get_width() / 2), self.ch_pos_y))
+        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] / 2) - 150, self.ch_pos_y))
 
         self.singleton.get_screen().blit(self.submit_button_img,
                                          (self.button_pos_x, self.button_pos_y))
