@@ -16,10 +16,6 @@ class EnterNameState:
         self.get_name_result = 'Enter your name'
         self.font = pygame.font.Font('fonts/SubwayCircleDemo.otf', 30)
 
-        # background
-        self.back_img = pygame.image.load('media/back.jpg').convert()
-        self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
-
         # get name background
         self.get_name_back_img = siw.scale_img_width(
             pygame.image.load('media/enter_name/enter_name_back.png').convert_alpha(), 500)
@@ -81,7 +77,7 @@ class EnterNameState:
             self.button_pos_y += 15
 
     def draw(self):
-        self.singleton.get_screen().blit(self.back_img, (0, 0))
+        self.singleton.get_screen().blit(self.singleton.default_back_img, (0, 0))
         self.singleton.get_screen().blit(self.get_name_back_img,
                                          ((self.singleton.get_screen_size()[0] / 2) - (
                                                  self.get_name_back_img.get_width() / 2), self.get_name_back_y))

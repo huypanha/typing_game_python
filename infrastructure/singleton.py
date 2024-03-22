@@ -1,3 +1,5 @@
+import datetime
+
 import pygame
 import threading
 from utils import scale_img_width as siw
@@ -25,6 +27,9 @@ class Singleton:
     __ch2_seq = []
     __selected_character_index = 0
 
+    # game
+    __game_start_time = None
+
     @classmethod
     def instance(cls):
         if cls.__instance is None:
@@ -50,6 +55,10 @@ class Singleton:
         self.sound_button_size = 50
         self.__mute_unmute_button_img = siw.scale_img_width(pygame.image.load("media/unmuted.png").convert_alpha(),
                                                             self.sound_button_size)
+
+        # background
+        self.default_back_img = pygame.transform.scale(pygame.image.load('media/back.jpg').convert(),
+                                                       self.get_screen_size())
 
     def get_screen(self):
         return self.screen
@@ -111,6 +120,12 @@ class Singleton:
     def start_thread(self, target):
         self.threads = threading.Thread(target=target)
         self.threads.start()
+
+    def set_game_start_time(self, value):
+        self.__game_start_time = value
+
+    def get_game_start_time(self):
+        return self.__game_start_time
 
     # character
     def set_character1(self, value):

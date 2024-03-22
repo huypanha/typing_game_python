@@ -12,10 +12,6 @@ class LoadingState:
         self.load_completed = False
         self.clicked_play_button = False
 
-        # background
-        self.back_img = pygame.image.load('media/back.jpg').convert()
-        self.back_img = pygame.transform.scale(self.back_img, singleton.get_screen_size())
-
         # game text logo
         self.logo_img = siw.scale_img_width(pygame.image.load('media/logo.png').convert_alpha(), 1000)
 
@@ -68,7 +64,7 @@ class LoadingState:
                     self.next_state = EnterNameState(self.singleton)
 
     def draw(self):
-        self.singleton.get_screen().blit(self.back_img, (0, 0))
+        self.singleton.get_screen().blit(self.singleton.default_back_img, (0, 0))
         self.singleton.get_screen().blit(self.logo_img, ((self.singleton.get_screen_size()[0] / 2)
                                                          - (self.logo_img.get_width() / 2), self.logo_pos_y))
 
@@ -78,8 +74,8 @@ class LoadingState:
                                              (self.button_pos_x, self.button_pos_y))
         else:
             # Draw progress bar
-            pygame.draw.rect(self.singleton.get_screen(), "green",
-                             (200, 500, self.singleton.get_screen_size()[0] - 400, 30), 3, border_radius=50)
             pygame.draw.rect(self.singleton.get_screen(), "orange",
+                             (200, 500, self.singleton.get_screen_size()[0] - 400, 30), 3, border_radius=50)
+            pygame.draw.rect(self.singleton.get_screen(), "#9ade00",
                              (204, 504, (self.singleton.get_screen_size()[0] - 406) * self.coefficient_progress, 23),
                              border_radius=50)

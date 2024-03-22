@@ -11,10 +11,6 @@ class SelectNumLetters:
     def __init__(self, singleton):
         self.singleton = singleton
 
-        # background
-        self.back_img = pygame.image.load('media/back.jpg').convert()
-        self.back_img = pygame.transform.scale(self.back_img, self.singleton.get_screen_size())
-
         # title
         self.title_img = siw.scale_img_width(
             pygame.image.load('media/select_letters/select_letter_title.png').convert_alpha(), 800)
@@ -140,7 +136,7 @@ class SelectNumLetters:
             self.button_pos_y += 10
 
     def draw(self):
-        self.singleton.get_screen().blit(self.back_img, (0, 0))
+        self.singleton.get_screen().blit(self.singleton.default_back_img, (0, 0))
         self.singleton.get_screen().blit(self.title_img,
                                          ((self.singleton.get_screen_size()[0] / 2) - (
                                                  self.title_img.get_width() / 2), self.title_img_pos_y))
