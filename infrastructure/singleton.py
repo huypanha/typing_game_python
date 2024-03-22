@@ -1,5 +1,6 @@
 import pygame
 import threading
+from utils import scale_img_width as siw
 
 
 class Singleton:
@@ -14,6 +15,10 @@ class Singleton:
     __num_sound_channel = 3
     __default_sound_channel = None
     __birds_sound_channel = None
+
+    # sound button
+    __is_muted = False
+    __mute_unmute_button_img = None
 
     # characters
     __ch1_seq = []
@@ -38,8 +43,13 @@ class Singleton:
         self.__birds_sound_channel = pygame.mixer.Channel(1)
         self.__default_sound = pygame.mixer.Sound("media/sounds/background.ogg")
         self.__birds_sound = pygame.mixer.Sound("media/sounds/birds.ogg")
-        # self.play_default_sound()
-        # self.play_birds_sound()
+        self.play_default_sound()
+        self.play_birds_sound()
+
+        # sound button
+        self.sound_button_size = 50
+        self.__mute_unmute_button_img = siw.scale_img_width(pygame.image.load("media/unmuted.png").convert_alpha(),
+                                                            self.sound_button_size)
 
     def get_screen(self):
         return self.screen
@@ -59,19 +69,44 @@ class Singleton:
     def get_num_letters(self):
         return self.__selected_num_letters
 
+    # sound
     def set_birds_sound(self, new_sound):
         self.__birds_sound = new_sound
 
     def play_default_sound(self):
-        self.__default_sound_channel.play(self.__default_sound, loops=-1)
+        if not self.__is_muted:
+            self.__default_sound_channel.play(self.__default_sound, loops=-1)
 
     def play_birds_sound(self):
-        self.__birds_sound_channel.play(self.__birds_sound, loops=-1)
+        if not self.__is_muted:
+            self.__birds_sound_channel.play(self.__birds_sound, loops=-1)
 
-    @staticmethod
-    def play_click_button():
-        pass
-        # pygame.mixer.Channel(2).play(pygame.mixer.Sound("media/sounds/button_click.ogg"))
+    def stop_default_sound(self):
+        self.__default_sound_channel.stop()
+
+    def stop_birds_sound(self):
+        self.__birds_sound_channel.stop()
+
+    def play_click_button(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(2).play(pygame.mixer.Sound("media/sounds/button_click.ogg"))
+
+    def toggle_mute_normal_sound(self):
+        if self.__is_muted:
+            self.__is_muted = False
+            self.__mute_unmute_button_img = siw.scale_img_width(pygame.image.load("media/unmuted.png").convert_alpha(),
+                                                                self.sound_button_size)
+            self.play_default_sound()
+            self.play_birds_sound()
+        else:
+            self.__is_muted = True
+            self.__mute_unmute_button_img = siw.scale_img_width(pygame.image.load("media/muted.png").convert_alpha(),
+                                                                self.sound_button_size)
+            self.stop_default_sound()
+            self.stop_birds_sound()
+
+    def get_sound_button_img(self):
+        return self.__mute_unmute_button_img
 
     def start_thread(self, target):
         self.threads = threading.Thread(target=target)
