@@ -1,7 +1,7 @@
 import pygame
 
 from utils import scale_img_width as siw
-from select_num_letters import SelectNumLetters
+from play import PlayState
 
 
 class ChooseCharacterState:
@@ -27,21 +27,11 @@ class ChooseCharacterState:
             pygame.image.load('media/choose_character/back.png').convert_alpha(), 450)
 
         # character
-        self.ch1_seq = []
-        for i in range(120):
-            self.ch1_seq.append(siw.scale_img_width(pygame.image.load('media/characters/Monkey/Comp 1_{}.png'
-                                                                      .format(str(i).rjust(5, "0"))).convert_alpha(),
-                                                    1000))
         self.current_frame_ch1 = 0
-        self.ch1 = self.ch1_seq[self.current_frame_ch1]
+        self.ch1 = self.singleton.get_character1()[self.current_frame_ch1]
 
-        self.ch2_seq = []
-        for i in range(120):
-            self.ch2_seq.append(siw.scale_img_width(pygame.image.load('media/characters/Rabbit/Comp 2_{}.png'
-                                                                      .format(str(i).rjust(5, "0"))).convert_alpha(),
-                                                    1000))
         self.current_frame_ch2 = 0
-        self.ch2 = self.ch2_seq[self.current_frame_ch2]
+        self.ch2 = self.singleton.get_character2()[self.current_frame_ch2]
 
         # animate
         self.ch_back_pos_y = -450
@@ -101,14 +91,11 @@ class ChooseCharacterState:
         elif self.ch_back_pos_y >= -450 and self.clicked_submit_button:
             self.ch_back_pos_y -= 20
             if self.clicked_submit_button and self.ch_back_pos_y <= -450:
-                if self.selected_index == 0:
-                    self.singleton.set_character(self.ch1_seq)
-                elif self.selected_index == 1:
-                    self.singleton.set_character(self.ch2_seq)
-                self.next_state = SelectNumLetters(self.singleton)
+                self.singleton.set_selected_character_index(self.selected_index)
+                self.next_state = PlayState(self.singleton)
 
         # animate character
-        if self.ch_pos_y < 100 and not self.clicked_submit_button:
+        if self.ch_pos_y < 50 and not self.clicked_submit_button:
             self.ch_pos_y += 20
         elif self.ch_pos_y >= -400 and self.clicked_submit_button:
             self.ch_pos_y -= 20
@@ -120,12 +107,12 @@ class ChooseCharacterState:
             self.button_pos_y += 10
 
         # animate character 1
-        self.ch1 = self.ch1_seq[self.current_frame_ch1]
-        self.current_frame_ch1 = (self.current_frame_ch1 + 1) % len(self.ch1_seq)
+        self.ch1 = self.singleton.get_character1()[self.current_frame_ch1]
+        self.current_frame_ch1 = (self.current_frame_ch1 + 1) % len(self.singleton.get_character1())
 
         # animate character 2
-        self.ch2 = self.ch2_seq[self.current_frame_ch2]
-        self.current_frame_ch2 = (self.current_frame_ch2 + 1) % len(self.ch2_seq)
+        self.ch2 = self.singleton.get_character2()[self.current_frame_ch2]
+        self.current_frame_ch2 = (self.current_frame_ch2 + 1) % len(self.singleton.get_character2())
 
     def draw(self):
         self.singleton.get_screen().blit(self.back_img, (0, 0))
@@ -139,7 +126,7 @@ class ChooseCharacterState:
         # draw character
         self.singleton.get_screen().blit(self.ch1, ((self.singleton.get_screen_size()[0] / 4) -
                                                     (self.ch1.get_width() / 2), self.ch_pos_y))
-        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] / 2) - 150, self.ch_pos_y))
+        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] / 2) - 250, self.ch_pos_y))
 
         self.singleton.get_screen().blit(self.submit_button_img,
                                          (self.button_pos_x, self.button_pos_y))

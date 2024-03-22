@@ -1,6 +1,7 @@
 import pygame
 
 from utils import scale_img_width as siw
+from choose_character import ChooseCharacterState
 
 
 class SelectNumLetters:
@@ -130,7 +131,7 @@ class SelectNumLetters:
         elif self.row2_btn_pos_y >= -250 and self.clicked_play_button:
             self.row2_btn_pos_y -= 20
             if self.clicked_play_button and self.row2_btn_pos_y <= -250:
-                self.next_state = SelectNumLetters(self.singleton)
+                self.next_state = ChooseCharacterState(self.singleton)
 
         # animate button submit
         if self.button_pos_y > 500 and not self.clicked_play_button:

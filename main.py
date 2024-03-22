@@ -1,14 +1,17 @@
 import pygame
-from start_state import StartState
 from infrastructure import singleton as st
+from loading import LoadingState
 
 pygame.init()
 
 singleton = st.Singleton.instance()
 pygame.display.set_caption("Angkor Typing Game")
 
-current_state = StartState(singleton)
+current_state = LoadingState(singleton)
 FPS = 60
+
+# load all characters at the first time
+singleton.start_thread(current_state.load_images)
 
 running = True
 while running:

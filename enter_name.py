@@ -1,7 +1,7 @@
 import pygame
 
 from utils import scale_img_width as siw
-from choose_character import ChooseCharacterState
+from select_num_letters import SelectNumLetters
 
 
 class EnterNameState:
@@ -71,7 +71,7 @@ class EnterNameState:
             self.get_name_back_y -= 15
             if self.clicked_submit_button and self.get_name_back_y <= -500:
                 self.singleton.set_user_name(self.get_name_result)
-                self.next_state = ChooseCharacterState(self.singleton)
+                self.next_state = SelectNumLetters(self.singleton)
 
         self.text_surface = self.font.render(self.get_name, True, (255, 255, 255))
 
