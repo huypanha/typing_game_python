@@ -15,9 +15,9 @@ singleton.start_thread(current_state.load_images)
 
 # sound button
 sound_button_pos_x = (singleton.get_screen_size()[0] -
-                                   (singleton.get_sound_button_img().get_width() + 20))
+                      (singleton.get_sound_button_img().get_width() + 20))
 sound_button_pos_y = (singleton.get_screen_size()[1] -
-                                   (singleton.get_sound_button_img().get_width() + 20))
+                      (singleton.get_sound_button_img().get_width() + 20))
 
 running = True
 while running:

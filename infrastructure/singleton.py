@@ -1,5 +1,3 @@
-import datetime
-
 import pygame
 import threading
 from utils import scale_img_width as siw
@@ -14,7 +12,7 @@ class Singleton:
     # sound
     __default_sound = None
     __birds_sound = None
-    __num_sound_channel = 3
+    __num_sound_channel = 4
     __default_sound_channel = None
     __birds_sound_channel = None
 
@@ -99,6 +97,14 @@ class Singleton:
     def play_click_button(self):
         if not self.__is_muted:
             pygame.mixer.Channel(2).play(pygame.mixer.Sound("media/sounds/button_click.ogg"))
+
+    def play_countdown_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound("media/sounds/countdown.ogg"))
+
+    def play_countdown_end_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound("media/sounds/countdown_end.ogg"))
 
     def toggle_mute_normal_sound(self):
         if self.__is_muted:
