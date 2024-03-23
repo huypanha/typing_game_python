@@ -46,8 +46,8 @@ class Singleton:
         self.__birds_sound_channel = pygame.mixer.Channel(1)
         self.__default_sound = pygame.mixer.Sound("media/sounds/background.ogg")
         self.__birds_sound = pygame.mixer.Sound("media/sounds/birds.ogg")
-        self.play_default_sound()
-        self.play_birds_sound()
+        # self.play_default_sound()
+        # self.play_birds_sound()
 
         # sound button
         self.sound_button_size = 50

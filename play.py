@@ -12,7 +12,7 @@ class PlayState:
         self.singleton = singleton
         self.next_state = None
         self.clicked_play_button = False
-        self.sky_mov = 5
+        self.sky_mov = 0
         self.timer_text = None
         self.pos_text = None
         self.time_img = None
@@ -32,29 +32,30 @@ class PlayState:
         if singleton.get_num_letters() == 3:
             self.letter_box = sih(pygame.image.load('media/game/3_letters_box.png').convert_alpha(), 100)
             with open("words/3letters.txt") as words:
-                self.words = words.readlines()
+                self.all_words = words.readlines()
             self.first_letter_pos = (singleton.get_screen_size()[0] / 2) - 80
         elif singleton.get_num_letters() == 4:
             self.letter_box = sih(pygame.image.load('media/game/4_letters_box.png').convert_alpha(), 100)
             with open("words/4letters.txt") as words:
-                self.words = words.readlines()
+                self.all_words = words.readlines()
             self.first_letter_pos = (singleton.get_screen_size()[0] / 2) - 105
         elif singleton.get_num_letters() == 5:
             self.letter_box = sih(pygame.image.load('media/game/5_letters_box.png').convert_alpha(), 100)
             with open("words/5letters.txt") as words:
-                self.words = words.readlines()
+                self.all_words = words.readlines()
             self.first_letter_pos = (singleton.get_screen_size()[0] / 2) - 135
         elif singleton.get_num_letters() == 6:
             self.letter_box = sih(pygame.image.load('media/game/6_letters_box.png').convert_alpha(), 100)
             with open("words/6letters.txt") as words:
-                self.words = words.readlines()
+                self.all_words = words.readlines()
             self.first_letter_pos = (singleton.get_screen_size()[0] / 2) - 160
 
         # text
         self.font = pygame.font.Font('fonts/Impacted.ttf', 30)
-        self.word_chars = self.words[rnd.randint(0, len(self.words))].upper()
         self.typing_letters_text_surface = []
         self.typing_letter_pos_x = self.first_letter_pos
+        self.word_chars = []
+        self.get_letters()
 
         # pos
         self.start_pos = self.singleton.get_screen_size()[0] * .25
@@ -66,11 +67,23 @@ class PlayState:
         self.old_time_img_num = 0
 
         # restart button
-        self.restart_btn_img = siw(pygame.image.load("media/unmuted.png").convert_alpha(),
-                                   singleton.sound_button_size)
+        self.restart_btn_img = siw(pygame.image.load("media/unmuted.png").convert_alpha(), singleton.sound_button_size)
         self.restart_btn_pos_x = 20
-        self.restart_btn_pos_y = (singleton.get_screen_size()[1] -
-                                  (singleton.get_sound_button_img().get_width() + 20))
+        self.restart_btn_pos_y = (singleton.get_screen_size()[1] - (singleton.get_sound_button_img().get_width() + 20))
+
+        # typing
+        self.current_typing_letter_index = 0
+        # store all typed words
+        self.typed_words = []
+        # store all typed current word letters
+        self.typed_letters = []
+
+    def get_letters(self):
+        self.word_chars = self.all_words[rnd.randint(0, len(self.all_words))].upper()
+        self.typing_letter_pos_x = self.first_letter_pos
+        self.typed_letters = []
+        self.typing_letters_text_surface = []
+        self.current_typing_letter_index = 0
 
     def handle_events(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
@@ -79,6 +92,17 @@ class PlayState:
                     self.singleton.sound_button_size):
                 self.next_state = select_num_letters.SelectNumLetters(self.singleton)
                 self.singleton.play_click_button()
+
+        # get user typing
+        if event.type == pygame.KEYDOWN:
+            if self.word_chars[self.current_typing_letter_index].lower() == str(event.unicode).lower():
+                # save typed letter
+                self.typed_letters.append(event.unicode)
+                if len(self.typed_letters) == self.singleton.get_num_letters():
+                    self.typed_words.append("".join(self.typed_letters))
+                    self.get_letters()
+                else:
+                    self.current_typing_letter_index += 1
 
     def update(self):
         # wait 3 seconds
@@ -107,8 +131,10 @@ class PlayState:
                     self.singleton.play_countdown_sound()
                 self.old_time_img_num = new_time_num
 
-            self.singleton.set_game_start_time(datetime.datetime.now())
             self.timer_text = self.font.render("00:00", True, (255, 255, 255))
+
+            # set started time
+            self.singleton.set_game_start_time(datetime.datetime.now())
         else:
             # clear time text
             self.time_img = None
@@ -150,8 +176,7 @@ class PlayState:
         # % = ((current - start) * 100) / (current - start)
         road_pos_percent = (self.current_mov * 100) / -self.road_width
         # current point pos = start + (% * (end - start))
-        pygame.draw.circle(self.singleton.get_screen(), (255, 0, 0),
-                           (self.singleton.get_screen_size()[0] * .25, 55), 8)
+        pygame.draw.circle(self.singleton.get_screen(), (255, 0, 0), (self.singleton.get_screen_size()[0] * .25, 55), 8)
         pygame.draw.circle(self.singleton.get_screen(), (0, 255, 0),
                            (self.start_pos + ((road_pos_percent * (self.end_pos - self.start_pos)) / 100), 55), 8)
 
@@ -169,8 +194,7 @@ class PlayState:
             self.typing_letter_pos_x += 55
 
         # restart button
-        self.singleton.get_screen().blit(self.restart_btn_img,
-                                         (self.restart_btn_pos_x, self.restart_btn_pos_y))
+        self.singleton.get_screen().blit(self.restart_btn_img, (self.restart_btn_pos_x, self.restart_btn_pos_y))
 
         if self.time_img is not None:
             self.singleton.get_screen().blit(self.time_img, ((self.singleton.get_screen_size()[0] / 2) -
