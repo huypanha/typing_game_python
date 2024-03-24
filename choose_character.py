@@ -32,7 +32,7 @@ class ChooseCharacterState:
         # animate
         self.ch_back_pos_y = -450
         self.title_text_pos_y = -200
-        self.ch_pos_y = -1000
+        self.ch_pos_y = -500
 
         # play button
         self.submit_button_img = siw.width(
@@ -93,7 +93,7 @@ class ChooseCharacterState:
                 self.next_state = play.PlayState(self.singleton)
 
         # animate character
-        if self.ch_pos_y < 50 and not self.clicked_submit_button:
+        if self.ch_pos_y < 300 and not self.clicked_submit_button:
             self.ch_pos_y += 20
         elif self.ch_pos_y >= -400 and self.clicked_submit_button:
             self.ch_pos_y -= 20
@@ -106,11 +106,11 @@ class ChooseCharacterState:
 
         # animate character 1
         self.ch1 = self.singleton.get_characters()[0][self.current_frame_ch1]
-        self.current_frame_ch1 = (self.current_frame_ch1 + 1) % len(self.singleton.get_characters())
+        self.current_frame_ch1 = (self.current_frame_ch1 + 1) % len(self.singleton.get_characters()[0])
 
         # animate character 2
         self.ch2 = self.singleton.get_characters()[1][self.current_frame_ch2]
-        self.current_frame_ch2 = (self.current_frame_ch2 + 1) % len(self.singleton.get_characters())
+        self.current_frame_ch2 = (self.current_frame_ch2 + 1) % len(self.singleton.get_characters()[1])
 
     def draw(self):
         self.singleton.get_screen().blit(self.singleton.default_back_img, (0, 0))
@@ -122,9 +122,10 @@ class ChooseCharacterState:
         self.singleton.get_screen().blit(self.ch_2_back_img, (self.ch2_back_pos_x, self.ch_back_pos_y))
 
         # draw character
-        self.singleton.get_screen().blit(self.ch1, ((self.singleton.get_screen_size()[0] / 4) -
+        self.singleton.get_screen().blit(self.ch1, ((self.singleton.get_screen_size()[0] * .22) -
                                                     (self.ch1.get_width() / 2), self.ch_pos_y))
-        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] / 2) - 250, self.ch_pos_y))
+        self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] * .72) -
+                                                    (self.ch1.get_width() / 2), self.ch_pos_y))
 
         self.singleton.get_screen().blit(self.submit_button_img,
                                          (self.button_pos_x, self.button_pos_y))

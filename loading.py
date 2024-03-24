@@ -32,14 +32,14 @@ class LoadingState:
             if len(self.singleton.get_characters()) == 0:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[0].append(siw.width(pygame.image.load(
-                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
+                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
             self.coefficient_progress = i / 240
 
         for i in range(120):
             if len(self.singleton.get_characters()) == 1:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[1].append(siw.width(pygame.image.load(
-                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
+                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
             self.coefficient_progress = (i + 120) / 240
 
             # when reached to the last image

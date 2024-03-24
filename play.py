@@ -78,6 +78,28 @@ class PlayState:
         # store all typed current word letters
         self.typed_letters = []
 
+        # character
+        self.player_seq = None
+        self.other_player_seq = None
+        self.current_player_frame = 0
+        self.current_other_player_frame = 0
+        if singleton.get_selected_character_index() == 0:
+            self.player_seq = singleton.get_characters()[0]
+            self.other_player_seq = singleton.get_characters()[1]
+        else:
+            self.player_seq = singleton.get_characters()[1]
+            self.other_player_seq = singleton.get_characters()[0]
+        self.player = self.player_seq[0]
+        self.other_player = self.other_player_seq[0]
+
+        # character position
+        self.player_speed = 4
+        self.other_player_speed = 3
+        self.player_pos = 50
+        self.other_player_pos = 50
+        self.other_player_pos_y = 50
+        self.last_update_other_player_speed = datetime.datetime.now()
+
     def get_letters(self):
         # random new word
         self.word_chars = self.all_words[rnd.randrange(len(self.all_words))].upper()
@@ -99,6 +121,7 @@ class PlayState:
             if t == self.current_typing_letter_index:
                 self.typing_letters_text_surface.append(self.font.render(self.word_chars[t], True, "white"))
             else:
+                print(self.word_chars)
                 self.typing_letters_text_surface.append(self.font.render(self.word_chars[t], True, "black"))
 
     def handle_events(self, event):
@@ -109,7 +132,7 @@ class PlayState:
                 self.singleton.play_click_button()
                 # stop playing background sound
                 self.singleton.stop_background_sound()
-                # start play normal background sound and birth sound
+                # start play normal background sound and birds sound
                 self.singleton.play_background_sound()
                 self.singleton.play_birds_sound()
                 self.next_state = select_num_letters.SelectNumLetters(self.singleton)
@@ -167,6 +190,9 @@ class PlayState:
 
             self.timer_text = self.font.render("00:00", True, (255, 255, 255))
 
+            # create pos text
+            self.pos_text = self.font.render("-/2", True, (255, 255, 255))
+
             # set started time
             self.singleton.set_game_start_time(datetime.datetime.now())
         else:
@@ -178,7 +204,7 @@ class PlayState:
 
             # move background
             if self.current_mov >= -self.road_width:
-                self.current_mov -= 5
+                self.current_mov -= self.player_speed
                 self.sky_mov -= .5
 
             # create timer text
@@ -186,17 +212,32 @@ class PlayState:
             time_dif = datetime.datetime(1, 1, 1) + time_dif
             self.timer_text = self.font.render("{}".format(time_dif.strftime("%M:%S")), True, (255, 255, 255))
 
-        # create pos text
-        self.pos_text = self.font.render("1/2", True, (255, 255, 255))
+            # create pos text
+            self.pos_text = self.font.render("1/2", True, (255, 255, 255))
+
+            # update character position
+            self.other_player_pos_y = (self.other_player_pos + self.current_mov) + self.other_player_speed
+            self.other_player_pos += self.other_player_speed
 
         # render text surface
         self.get_text_surface()
+
+        # animate character
+        self.player = self.player_seq[self.current_player_frame]
+        self.current_player_frame = (self.current_player_frame + 1) % len(self.player_seq)
+        self.other_player = self.other_player_seq[self.current_other_player_frame]
+        self.current_other_player_frame = (self.current_other_player_frame + 1) % len(self.other_player_seq)
+
+        # random other player speed every 3 seconds
+        if (datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >= 3:
+            self.other_player_speed = rnd.randrange(3, 7)
+            self.last_update_other_player_speed = datetime.datetime.now()
 
     def draw(self):
         # draw sky
         for x in range(3):
             self.singleton.get_screen().blit(self.sky_back_img,
-                                             (x * self.sky_back_img.get_width() + self.sky_mov * 5, -70))
+                                             (x * self.sky_back_img.get_width() + self.sky_mov, -70))
 
         self.singleton.get_screen().blit(self.road, (self.current_mov, 20))
         self.singleton.get_screen().blit(self.timer_pos_back_img, (0, 0))
@@ -211,8 +252,10 @@ class PlayState:
 
         # % = ((current - start) * 100) / (current - start)
         road_pos_percent = (self.current_mov * 100) / -self.road_width
+        other_player_pos_percent = (self.other_player_pos * 100) / self.road_width
         # current point pos = start + (% * (end - start))
-        pygame.draw.circle(self.singleton.get_screen(), (255, 0, 0), (self.singleton.get_screen_size()[0] * .25, 55), 8)
+        pygame.draw.circle(self.singleton.get_screen(), (255, 0, 0),
+                           (self.start_pos + ((other_player_pos_percent * (self.end_pos - self.start_pos)) / 100), 55), 8)
         pygame.draw.circle(self.singleton.get_screen(), (0, 255, 0),
                            (self.start_pos + ((road_pos_percent * (self.end_pos - self.start_pos)) / 100), 55), 8)
 
@@ -232,6 +275,12 @@ class PlayState:
         # restart button
         self.singleton.get_screen().blit(self.restart_btn_img, (self.restart_btn_pos_x, self.restart_btn_pos_y))
 
+        # draw characters
+        self.singleton.get_screen().blit(self.other_player, (self.other_player_pos_y,
+                                                             (self.singleton.get_screen_size()[1] * .25)))
+        self.singleton.get_screen().blit(self.player, (50, (self.singleton.get_screen_size()[1] * .53)))
+
+        # draw waiting 3 seconds
         if self.time_img is not None:
             self.singleton.get_screen().blit(self.time_img, ((self.singleton.get_screen_size()[0] / 2) -
                                                              (self.time_img.get_width() / 2),
