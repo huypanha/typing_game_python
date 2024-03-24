@@ -1,6 +1,6 @@
 import pygame
 
-from utils import scale_img_width as siw
+from utils import scale_img as siw
 from select_num_letters import SelectNumLetters
 
 
@@ -17,15 +17,15 @@ class EnterNameState:
         self.font = pygame.font.Font('fonts/SubwayCircleDemo.otf', 30)
 
         # get name background
-        self.get_name_back_img = siw.scale_img_width(
-            pygame.image.load('media/enter_name/enter_name_back.png').convert_alpha(), 500)
+        self.get_name_back_img = siw.width(
+            pygame.image.load('src/enter_name/enter_name_back.png').convert_alpha(), 500)
 
         # animate get name background
         self.get_name_back_y = -450
 
         # play button
-        self.submit_button_img = siw.scale_img_width(
-            pygame.image.load('media/enter_name/button_submit.png').convert_alpha(), 150)
+        self.submit_button_img = siw.width(
+            pygame.image.load('src/enter_name/button_submit.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.submit_button_img.get_width() / 2)

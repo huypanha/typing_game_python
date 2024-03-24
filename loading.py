@@ -1,6 +1,6 @@
 import pygame.image
 
-from utils import scale_img_width as siw
+from utils import scale_img as siw
 from enter_name import EnterNameState
 
 
@@ -12,14 +12,14 @@ class LoadingState:
         self.load_completed = False
         self.clicked_play_button = False
 
-        # game text logo
-        self.logo_img = siw.scale_img_width(pygame.image.load('media/logo.png').convert_alpha(), 1000)
+        # play text logo
+        self.logo_img = siw.width(pygame.image.load('src/logo.png').convert_alpha(), 1000)
 
         # animate logo
         self.logo_pos_y = 50
 
         # play button
-        self.play_button_img = siw.scale_img_width(pygame.image.load('media/play_button.png').convert_alpha(), 150)
+        self.play_button_img = siw.width(pygame.image.load('src/play_button.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_button_img.get_width() / 2)
@@ -29,13 +29,17 @@ class LoadingState:
 
     def load_images(self):
         for i in range(120):
-            self.singleton.get_character1().append(siw.scale_img_width(pygame.image.load(
-                'media/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
+            if len(self.singleton.get_characters()) == 0:
+                self.singleton.get_characters().append([])
+            self.singleton.get_characters()[0].append(siw.width(pygame.image.load(
+                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
             self.coefficient_progress = i / 240
 
         for i in range(120):
-            self.singleton.get_character2().append(siw.scale_img_width(pygame.image.load(
-                'media/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
+            if len(self.singleton.get_characters()) == 1:
+                self.singleton.get_characters().append([])
+            self.singleton.get_characters()[1].append(siw.width(pygame.image.load(
+                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
             self.coefficient_progress = (i + 120) / 240
 
             # when reached to the last image
