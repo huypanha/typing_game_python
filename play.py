@@ -93,11 +93,12 @@ class PlayState:
         self.other_player = self.other_player_seq[0]
 
         # character position
-        self.player_speed = 4
+        self.player_speed = 3
         self.other_player_speed = 3
         self.player_pos = 50
         self.other_player_pos = 50
         self.other_player_pos_y = 50
+        self.last_update_player_speed = datetime.datetime.now()
         self.last_update_other_player_speed = datetime.datetime.now()
 
     def get_letters(self):
@@ -121,10 +122,11 @@ class PlayState:
             if t == self.current_typing_letter_index:
                 self.typing_letters_text_surface.append(self.font.render(self.word_chars[t], True, "white"))
             else:
-                print(self.word_chars)
+                # print(self.word_chars)
                 self.typing_letters_text_surface.append(self.font.render(self.word_chars[t], True, "black"))
 
     def handle_events(self, event):
+        print(str(self.current_mov) + ', ' + str(-self.road_width))
         if event.type == pygame.MOUSEBUTTONUP:
             if (self.restart_btn_pos_x <= event.pos[0] <= self.restart_btn_pos_x + self.singleton.sound_button_size
                     and self.restart_btn_pos_y <= event.pos[1] <= self.restart_btn_pos_y +
@@ -139,27 +141,51 @@ class PlayState:
 
         # get user typing
         if event.type == pygame.KEYDOWN:
-            # accept typing after wait 3 seconds completed
-            if 0 > self.current_mov > -self.road_width:
-                if self.word_chars[self.current_typing_letter_index].lower() == str(event.unicode).lower():
-                    # save typed letter
-                    self.typed_letters.append(event.unicode)
-                    if len(self.typed_letters) == self.singleton.get_num_letters():
-                        self.typed_words.append("".join(self.typed_letters))
-                        self.get_letters()
+            # accept typing when player does not reach finish line
+            if self.player_pos <= 700:
+                # still accept typing after wait 3 seconds completed
+                # (-self.road_width) - 1 because from debug when finished is 0 > -11701 >= -11700 is not true
+                if 0 > self.current_mov >= (-self.road_width) - 1:
+                    if self.word_chars[self.current_typing_letter_index].lower() == str(event.unicode).lower():
+                        # save typed letter
+                        self.typed_letters.append(event.unicode)
+                        if len(self.typed_letters) == self.singleton.get_num_letters():
+                            # play sound when typed the last letter
+                            self.singleton.play_typing_last_letter_sound()
+
+                            # save typed word
+                            self.typed_words.append("".join(self.typed_letters))
+                            self.get_letters()
+
+                            # increase speed 1 when complete the word
+                            if self.player_speed <= 6:
+                                self.player_speed += 1
+                            self.last_update_player_speed = datetime.datetime.now()
+                        else:
+                            # play sound when typing first letter
+                            if len(self.typed_letters) == 1:
+                                self.singleton.play_typing_first_letter_sound()
+
+                            self.current_typing_letter_index += 1
+
+                        self.letter_box = sih(pygame.image.load(
+                            f'src/letter_box/normal/{self.singleton.get_num_letters()}letters/'
+                            f'{self.current_typing_letter_index + 1}.png').convert_alpha(), 100)
                     else:
-                        self.current_typing_letter_index += 1
+                        # play wrong sound
+                        self.singleton.play_typing_wrong_sound()
 
-                    self.letter_box = sih(pygame.image.load(
-                        f'src/letter_box/normal/{self.singleton.get_num_letters()}letters/'
-                        f'{self.current_typing_letter_index + 1}.png').convert_alpha(), 100)
-                else:
-                    self.letter_box = sih(pygame.image.load(
-                        f'src/letter_box/incorrect/{self.singleton.get_num_letters()}letters/'
-                        f'{self.current_typing_letter_index + 1}.png').convert_alpha(), 100)
+                        self.letter_box = sih(pygame.image.load(
+                            f'src/letter_box/incorrect/{self.singleton.get_num_letters()}letters/'
+                            f'{self.current_typing_letter_index + 1}.png').convert_alpha(), 100)
 
-                # re-render text surface
-                self.get_text_surface()
+                        # decrease speed 1 when typed incorrect letter
+                        if self.player_speed >= 3:
+                            self.player_speed -= 1
+                        self.last_update_player_speed = datetime.datetime.now()
+
+                    # re-render text surface
+                    self.get_text_surface()
 
     def update(self):
         # wait 3 seconds
@@ -203,9 +229,11 @@ class PlayState:
             self.singleton.play_background_sound("src/sounds/playing.ogg")
 
             # move background
-            if self.current_mov >= -self.road_width:
+            if -self.current_mov <= self.road_width:
                 self.current_mov -= self.player_speed
                 self.sky_mov -= .5
+            elif self.player_pos <= 700:
+                self.player_pos += self.player_speed
 
             # create timer text
             time_dif = datetime.datetime.now() - self.singleton.get_game_start_time()
@@ -213,11 +241,15 @@ class PlayState:
             self.timer_text = self.font.render("{}".format(time_dif.strftime("%M:%S")), True, (255, 255, 255))
 
             # create pos text
-            self.pos_text = self.font.render("1/2", True, (255, 255, 255))
+            if -self.current_mov >= (self.other_player_pos - 100):
+                self.pos_text = self.font.render("1/2", True, (255, 255, 255))
+            else:
+                self.pos_text = self.font.render("2/2", True, (255, 255, 255))
 
-            # update character position
-            self.other_player_pos_y = (self.other_player_pos + self.current_mov) + self.other_player_speed
-            self.other_player_pos += self.other_player_speed
+            # update other player position
+            if self.other_player_pos <= self.road_width + 700:
+                self.other_player_pos_y = (self.other_player_pos + self.current_mov) + self.other_player_speed
+                self.other_player_pos += self.other_player_speed
 
         # render text surface
         self.get_text_surface()
@@ -232,6 +264,11 @@ class PlayState:
         if (datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >= 3:
             self.other_player_speed = rnd.randrange(3, 7)
             self.last_update_other_player_speed = datetime.datetime.now()
+
+        # decrease player speed
+        if (datetime.datetime.now() - self.last_update_player_speed).total_seconds() >= 3 and self.player_speed >= 3:
+            self.player_speed -= 1
+            self.last_update_player_speed = datetime.datetime.now()
 
     def draw(self):
         # draw sky
@@ -252,10 +289,11 @@ class PlayState:
 
         # % = ((current - start) * 100) / (current - start)
         road_pos_percent = (self.current_mov * 100) / -self.road_width
-        other_player_pos_percent = (self.other_player_pos * 100) / self.road_width
+        other_player_pos_percent = (self.other_player_pos * 100) / (self.road_width + 700)
         # current point pos = start + (% * (end - start))
         pygame.draw.circle(self.singleton.get_screen(), (255, 0, 0),
-                           (self.start_pos + ((other_player_pos_percent * (self.end_pos - self.start_pos)) / 100), 55), 8)
+                           (self.start_pos + ((other_player_pos_percent * (self.end_pos - self.start_pos)) / 100),
+                            55), 8)
         pygame.draw.circle(self.singleton.get_screen(), (0, 255, 0),
                            (self.start_pos + ((road_pos_percent * (self.end_pos - self.start_pos)) / 100), 55), 8)
 
@@ -278,7 +316,7 @@ class PlayState:
         # draw characters
         self.singleton.get_screen().blit(self.other_player, (self.other_player_pos_y,
                                                              (self.singleton.get_screen_size()[1] * .25)))
-        self.singleton.get_screen().blit(self.player, (50, (self.singleton.get_screen_size()[1] * .53)))
+        self.singleton.get_screen().blit(self.player, (self.player_pos, (self.singleton.get_screen_size()[1] * .53)))
 
         # draw waiting 3 seconds
         if self.time_img is not None:
