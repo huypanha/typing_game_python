@@ -45,7 +45,8 @@ class EnterNameState:
             elif event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE:
                 self.get_name_result = self.get_name_result[:-1]
             else:
-                self.get_name_result += event.unicode
+                if len(self.get_name_result) <= 11:
+                    self.get_name_result += event.unicode
 
             if len(self.get_name_result) > 22:
                 self.get_name = self.get_name_result[len(self.get_name_result) - 22:]

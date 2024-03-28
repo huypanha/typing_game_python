@@ -11,6 +11,7 @@ class LoadingState:
         self.coefficient_progress = 0
         self.load_completed = False
         self.clicked_play_button = False
+        self.number_of_jobs = 480
 
         # play text logo
         self.logo_img = siw.width(pygame.image.load('src/logo.png').convert_alpha(), 1000)
@@ -27,23 +28,43 @@ class LoadingState:
         # animate button
         self.button_pos_y = 800
 
+        # result characters
+        self.result_player_character = None
+        self.result_other_player_character = None
+
     def load_images(self):
         for i in range(120):
             if len(self.singleton.get_characters()) == 0:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[0].append(siw.width(pygame.image.load(
                 'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
-            self.coefficient_progress = i / 240
+            self.coefficient_progress = i / self.number_of_jobs
 
         for i in range(120):
             if len(self.singleton.get_characters()) == 1:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[1].append(siw.width(pygame.image.load(
                 'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
-            self.coefficient_progress = (i + 120) / 240
+            self.coefficient_progress = (i + 120) / self.number_of_jobs
+
+        # get result character
+        for i in range(120):
+            if len(self.singleton.get_characters()) == 0:
+                self.singleton.get_characters().append([])
+            self.singleton.get_characters()[0].append(siw.width(pygame.image.load(
+                'src/characters/Rabbit/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 100))
+            self.coefficient_progress = (i + 240) / self.number_of_jobs
+
+        # get result character
+        for i in range(120):
+            if len(self.singleton.get_characters()) == 1:
+                self.singleton.get_characters().append([])
+            self.singleton.get_characters()[1].append(siw.width(pygame.image.load(
+                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 100))
+            self.coefficient_progress = (i + 360) / self.number_of_jobs
 
             # when reached to the last image
-            if i >= 119:
+            if i >= 479:
                 self.load_completed = True
 
     def handle_events(self, event):
