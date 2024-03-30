@@ -75,7 +75,7 @@ class PlayState:
         self.typed_words = []
         # store all typed current word letters
         self.typed_letters = []
-        self.other_typed_letters = []
+        self.other_typed_words = []
         self.current_word_is_wrong = False
         self.wrong_words = []
         self.other_wrong_words = []
@@ -87,10 +87,14 @@ class PlayState:
         self.current_other_player_frame = 0
         if singleton.get_selected_character_index() == 0:
             self.player_seq = singleton.get_characters()[0]
+            self.result_player_seq = singleton.get_small_characters()[0]
             self.other_player_seq = singleton.get_characters()[1]
+            self.result_other_player_seq = singleton.get_small_characters()[1]
         else:
             self.player_seq = singleton.get_characters()[1]
+            self.result_player_seq = singleton.get_small_characters()[1]
             self.other_player_seq = singleton.get_characters()[0]
+            self.result_other_player_seq = singleton.get_small_characters()[0]
         self.player = self.player_seq[0]
         self.other_player = self.other_player_seq[0]
 
@@ -101,9 +105,11 @@ class PlayState:
         self.other_player_name_back = siw(pygame.image.load("src/play/other_player_name.png").convert_alpha(), 150)
 
         # random name
+        self.other_player_name_text = None
         with open("words/names.txt") as words:
             all_name = words.readlines()
-            self.other_player_name = self.name_font.render(all_name[rnd.randrange(len(all_name))].replace("\n", ""),
+            self.other_player_name_text = all_name[rnd.randrange(len(all_name))].replace("\n", "")
+            self.other_player_name = self.name_font.render(self.other_player_name_text,
                                                            True, (255, 255, 255))
 
         # character position
@@ -118,12 +124,44 @@ class PlayState:
         # time taken
         self.player_finish_time = None
         self.other_player_finish_time = None
-        self.first_opened_time = datetime.datetime.now()
+        self.start_time = None
+        self.wait_3s_time = datetime.datetime.now()
 
         # result
         self.result_back_img = siw(pygame.image.load('src/play/race_results.png').convert_alpha(),
                                    singleton.get_screen_size()[0] - 100)
         self.result_back_img_pos_y = -self.result_back_img.get_height()
+        self.time_taken = None
+        self.other_time_taken = None
+        self.wpm = None
+        self.other_wpm = None
+        self.result_text_player_pos_y = None
+        self.result_text_other_player_pos_y = None
+        self.result_player_name_surface = None
+        self.result_other_player_name_surface = None
+        self.result_player_wpm_surface = None
+        self.result_other_player_wpm_surface = None
+        self.result_player_accuracy = None
+        self.result_other_player_accuracy = None
+        self.result_player_accuracy_surface = None
+        self.result_other_player_accuracy_surface = None
+        self.result_player_time_taken_surface = None
+        self.result_other_player_time_taken_surface = None
+
+        # result character position
+        self.result_player_pos_y = None
+        self.result_other_player_pos_y = None
+        self.result_player = self.result_player_seq[0]
+        self.result_other_player = self.result_other_player_seq[0]
+        self.current_result_player_frame = 0
+        self.current_result_other_player_frame = 0
+
+        # result button
+        self.result_play_again_btn_img = siw(pygame.image.load('src/play/play_again_btn.png').convert_alpha(), 240)
+        self.result_main_menu_btn_img = siw(pygame.image.load('src/play/main_menu.png').convert_alpha(), 240)
+        self.result_btn_pos_x = 950
+        self.result_play_again_btn_pos_y = -(self.result_back_img.get_height() - 250)
+        self.result_main_menu_btn_pos_y = -(self.result_back_img.get_height() - 350)
 
     def get_letters(self):
         # random new word
@@ -163,6 +201,12 @@ class PlayState:
                 self.singleton.play_background_sound()
                 self.singleton.play_birds_sound()
                 self.next_state = select_num_letters.SelectNumLetters(self.singleton)
+
+            # handle click play again button
+            # if (self.restart_btn_pos_x <= event.pos[0] <= self.restart_btn_pos_x + self.singleton.sound_button_size
+            #         and self.restart_btn_pos_y <= event.pos[1] <= self.restart_btn_pos_y +
+            #         self.singleton.sound_button_size):
+            #     self.singleton.play_click_button()
 
         # get user typing
         if event.type == pygame.KEYDOWN:
@@ -223,8 +267,10 @@ class PlayState:
                     self.get_text_surface()
 
     def update(self):
+
         # wait 3 seconds
-        total_sec = (datetime.datetime.now() - self.first_opened_time).total_seconds()
+        total_sec = (datetime.datetime.now() - self.wait_3s_time).total_seconds()
+
         if total_sec <= 4:
             new_time_num = 0
 
@@ -253,10 +299,11 @@ class PlayState:
 
             # create pos text
             self.pos_text = self.font.render("-/2", True, (255, 255, 255))
-
-            # set started time
-            self.singleton.set_game_start_time(datetime.datetime.now())
         else:
+            # set started time
+            if self.start_time is None:
+                self.start_time = datetime.datetime.now()
+
             # clear time text
             self.time_img = None
 
@@ -269,20 +316,20 @@ class PlayState:
                 self.sky_mov -= .5
             elif self.player_pos <= 700:
                 self.player_pos += self.player_speed
-            else:
+            elif -self.current_mov >= self.road_width and self.player_pos >= 700:
                 # when player finish
                 self.player_speed = 0
                 if self.player_finish_time is None:
                     self.player_finish_time = datetime.datetime.now()
 
             # create timer text
-            time_dif = datetime.datetime.now() - self.singleton.get_game_start_time()
+            time_dif = datetime.datetime.now() - self.start_time
             time_dif = datetime.datetime(1, 1, 1) + time_dif
             if self.player_finish_time is None or self.other_player_finish_time is None:
                 self.timer_text = self.font.render("{}".format(time_dif.strftime("%M:%S")), True, (255, 255, 255))
 
             # create pos text
-            if -self.current_mov >= (self.other_player_pos - 100):
+            if -(self.current_mov - 700) >= (self.other_player_pos - 100):
                 self.pos_text = self.font.render("1/2", True, (255, 255, 255))
             else:
                 self.pos_text = self.font.render("2/2", True, (255, 255, 255))
@@ -294,7 +341,7 @@ class PlayState:
             elif -self.current_mov <= self.road_width:
                 self.other_player_pos_y = (self.other_player_pos + self.current_mov) - self.player_speed
                 self.other_player_pos -= self.other_player_speed
-            else:
+            elif self.other_player_pos >= self.road_width + 700 and -self.current_mov >= self.road_width:
                 if self.other_player_finish_time is None:
                     self.other_player_finish_time = datetime.datetime.now()
 
@@ -311,17 +358,18 @@ class PlayState:
             self.current_player_frame = (self.current_player_frame + 1) % len(self.player_seq)
 
         # random other player speed every 3 seconds and random typed correct and wrong words
-        if (datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >= 3:
+        if ((datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >= 3
+                and self.player_finish_time is None and self.other_player_finish_time is None):
             old_speed = self.other_player_speed
             self.other_player_speed = rnd.randrange(3, 7)
             self.last_update_other_player_speed = datetime.datetime.now()
 
             # used for count typed letters to calculate word per minutes
-            self.other_typed_letters.append(1)
+            self.other_typed_words.append(1)
 
             # generate correct or wrong words base on it speed changes
             if self.other_player_speed < old_speed:
-                # can add 1 or other characters, because we just its length only
+                # can add 1 or other characters when typed wrong word, because we just its length only
                 self.other_wrong_words.append(1)
 
         # decrease player speed
@@ -329,10 +377,99 @@ class PlayState:
             self.player_speed -= 1
             self.last_update_player_speed = datetime.datetime.now()
 
-        # animate result background
         if self.player_finish_time is not None and self.other_player_finish_time is not None:
+            # animate result background
             if self.result_back_img_pos_y <= 10:
                 self.result_back_img_pos_y += 20
+
+            # animate result character
+            self.result_player = self.result_player_seq[self.current_result_player_frame]
+            self.current_result_player_frame = (self.current_result_player_frame + 1) % len(self.result_player_seq)
+            self.result_other_player = self.result_other_player_seq[self.current_result_other_player_frame]
+            self.current_result_other_player_frame = ((self.current_result_other_player_frame + 1) %
+                                                      len(self.result_other_player_seq))
+
+            # calculate result
+            self.time_taken = self.player_finish_time - self.start_time
+            self.other_time_taken = self.other_player_finish_time - self.start_time
+            self.wpm = len(self.typed_words) / (self.time_taken.total_seconds() / 60)
+            self.other_wpm = len(self.typed_words) / (self.other_time_taken.total_seconds() / 60)
+            self.result_player_accuracy = 100 - (len(self.wrong_words) * 100) / len(self.typed_words)
+            self.result_other_player_accuracy = 100 - (len(self.other_wrong_words) * 100) / len(self.other_typed_words)
+
+            if self.wpm > self.other_wpm:
+                # init result text
+                if self.result_text_player_pos_y is None and self.result_text_other_player_pos_y is None:
+                    self.result_text_player_pos_y = -(self.result_back_img.get_height() - 300)
+                    self.result_text_other_player_pos_y = -(self.result_back_img.get_height() - 370)
+
+                # init all player position
+                if self.result_player_pos_y is None and self.result_other_player_pos_y is None:
+                    self.result_player_pos_y = -(self.result_back_img.get_height() - 190)
+                    self.result_other_player_pos_y = -(self.result_back_img.get_height() - 330)
+
+                # animate character position
+                if self.result_player_pos_y <= 190:
+                    self.result_player_pos_y += 20
+                if self.result_other_player_pos_y <= 360:
+                    self.result_other_player_pos_y += 20
+
+                # animate result text
+                if self.result_text_player_pos_y <= 230:
+                    self.result_text_player_pos_y += 20
+                if self.result_text_other_player_pos_y <= 386:
+                    self.result_text_other_player_pos_y += 20
+            else:
+                # init result text
+                if self.result_text_player_pos_y is None and self.result_text_other_player_pos_y is None:
+                    self.result_text_player_pos_y = -(self.result_back_img.get_height() - 370)
+                    self.result_text_other_player_pos_y = -(self.result_back_img.get_height() - 300)
+
+                # init all player position
+                if self.result_player_pos_y is None and self.result_other_player_pos_y is None:
+                    self.result_player_pos_y = -(self.result_back_img.get_height() - 330)
+                    self.result_other_player_pos_y = -(self.result_back_img.get_height() - 190)
+
+                # animate character position
+                if self.result_player_pos_y <= 360:
+                    self.result_player_pos_y += 20
+                if self.result_other_player_pos_y <= 190:
+                    self.result_other_player_pos_y += 20
+
+                # animate result text
+                if self.result_text_player_pos_y <= 386:
+                    self.result_text_player_pos_y += 20
+                if self.result_text_other_player_pos_y <= 230:
+                    self.result_text_other_player_pos_y += 20
+
+            # name
+            self.result_player_name_surface = self.font.render(self.singleton.get_user_name(), True, "red")
+            self.result_other_player_name_surface = self.font.render(self.other_player_name_text, True, "red")
+
+            # Word per minutes
+            self.result_player_wpm_surface = self.font.render(str(self.wpm).split('.')[0] + " WPM", True, "black")
+            self.result_other_player_wpm_surface = self.font.render(str(self.other_wpm).split('.')[0] + " WPM",
+                                                                    True, "black")
+
+            # Accuracy
+            self.result_player_accuracy_surface = self.font.render(
+                str(self.result_player_accuracy).split('.')[0] + " %", True, "red")
+            self.result_other_player_accuracy_surface = self.font.render(
+                str(self.result_other_player_accuracy).split('.')[0] + " %", True, "red")
+
+            # Accuracy
+            self.result_player_time_taken_surface = self.font.render(
+                str(self.time_taken.total_seconds() / 60).split('.')[0].rjust(2, '0') + ":"
+                + str(self.time_taken.total_seconds() % 60).split('.')[0].rjust(2, '0'), True, "black")
+            self.result_other_player_time_taken_surface = self.font.render(
+                str(self.other_time_taken.total_seconds() / 60).split('.')[0].rjust(2, '0') + ":"
+                + str(self.other_time_taken.total_seconds() % 60).split('.')[0].rjust(2, '0'), True, "black")
+
+            # animate result button
+            if self.result_play_again_btn_pos_y <= 150:
+                self.result_play_again_btn_pos_y += 20
+            if self.result_main_menu_btn_pos_y <= 230:
+                self.result_main_menu_btn_pos_y += 20
 
     def draw(self):
         # draw sky
@@ -408,6 +545,36 @@ class PlayState:
                                                                  (self.singleton.get_screen_size()[1] / 2) -
                                                                  (self.time_img.get_height() * .20)))
 
-        # draw result background
         if self.player_finish_time is not None and self.other_player_finish_time is not None:
+            # draw result background
             self.singleton.get_screen().blit(self.result_back_img, (50, self.result_back_img_pos_y))
+
+            # draw character result
+            self.singleton.get_screen().blit(self.result_player, (40, self.result_player_pos_y))
+            self.singleton.get_screen().blit(self.result_other_player, (40, self.result_other_player_pos_y))
+
+            # draw player name
+            self.singleton.get_screen().blit(self.result_player_name_surface, (250, self.result_text_player_pos_y))
+            self.singleton.get_screen().blit(self.result_other_player_name_surface,
+                                             (250, self.result_text_other_player_pos_y))
+
+            # draw WPM
+            self.singleton.get_screen().blit(self.result_player_wpm_surface, (450, self.result_text_player_pos_y))
+            self.singleton.get_screen().blit(self.result_other_player_wpm_surface,
+                                             (450, self.result_text_other_player_pos_y))
+
+            # draw accuracy
+            self.singleton.get_screen().blit(self.result_player_accuracy_surface, (620, self.result_text_player_pos_y))
+            self.singleton.get_screen().blit(self.result_other_player_accuracy_surface,
+                                             (620, self.result_text_other_player_pos_y))
+
+            # draw time taken
+            self.singleton.get_screen().blit(self.result_player_time_taken_surface, (760, self.result_text_player_pos_y))
+            self.singleton.get_screen().blit(self.result_other_player_time_taken_surface,
+                                             (760, self.result_text_other_player_pos_y))
+
+            # draw result button
+            self.singleton.get_screen().blit(self.result_play_again_btn_img,
+                                             (self.result_btn_pos_x, self.result_play_again_btn_pos_y))
+            self.singleton.get_screen().blit(self.result_main_menu_btn_img,
+                                             (self.result_btn_pos_x, self.result_main_menu_btn_pos_y))

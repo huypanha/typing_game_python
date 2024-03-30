@@ -32,9 +32,8 @@ class Singleton:
     # characters
     __character_seq_list = []
     __selected_character_index = 0
-
-    # play
-    __game_start_time = None
+    __small_character_seq_list = []
+    __small_selected_character_index = 0
 
     @classmethod
     def instance(cls):
@@ -159,15 +158,12 @@ class Singleton:
         self.threads = threading.Thread(target=target)
         self.threads.start()
 
-    def set_game_start_time(self, value):
-        self.__game_start_time = value
-
-    def get_game_start_time(self):
-        return self.__game_start_time
-
     # character
     def get_characters(self):
         return self.__character_seq_list
+
+    def get_small_characters(self):
+        return self.__small_character_seq_list
 
     def set_selected_character_index(self, value):
         self.__selected_character_index = value
