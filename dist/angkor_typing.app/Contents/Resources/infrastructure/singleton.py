@@ -14,9 +14,18 @@ class Singleton:
     # sound
     __birds_sound = None
     __click_button_sound = None
-    __num_sound_channel = 4
     __default_sound_channel = None
     __birds_sound_channel = None
+    __num_sound_channel = 6
+    """
+    Number of channel:
+    0: Background
+    1: Second sound (birth)
+    2: Button Click and typing sound
+    3: Countdown
+    4: Typing letter power and wrong
+    5: Finish sound
+    """
 
     # sound button
     __is_muted = False
@@ -25,9 +34,8 @@ class Singleton:
     # characters
     __character_seq_list = []
     __selected_character_index = 0
-
-    # play
-    __game_start_time = None
+    __small_character_seq_list = []
+    __small_selected_character_index = 0
 
     @classmethod
     def instance(cls):
@@ -56,7 +64,7 @@ class Singleton:
                                                   self.sound_button_size)
 
         # background
-        self.default_back_img = pygame.transform.scale(pygame.image.load('src/back.jpg').convert(),
+        self.default_back_img = pygame.transform.scale(pygame.image.load('src/background.jpg').convert(),
                                                        self.get_screen_size())
 
     def get_screen(self):
@@ -99,6 +107,14 @@ class Singleton:
         if not self.__is_muted:
             pygame.mixer.Channel(2).play(self.__click_button_sound)
 
+    def play_typing_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(2).play(pygame.mixer.Sound("src/sounds/typing.ogg"))
+
+    def play_finish_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound("src/sounds/finish.ogg"))
+
     def play_countdown_sound(self):
         if not self.__is_muted:
             pygame.mixer.Channel(3).play(pygame.mixer.Sound("src/sounds/countdown.ogg"))
@@ -133,6 +149,18 @@ class Singleton:
                                                       self.sound_button_size)
             self.stop_background_sound()
 
+    def play_typing_first_letter_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound("src/sounds/start_letter.ogg"))
+
+    def play_typing_last_letter_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound("src/sounds/last_letter.ogg"))
+
+    def play_typing_wrong_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound("src/sounds/typed_wrong.ogg"))
+
     def get_sound_button_img(self):
         return self.__mute_unmute_button_img
 
@@ -140,15 +168,12 @@ class Singleton:
         self.threads = threading.Thread(target=target)
         self.threads.start()
 
-    def set_game_start_time(self, value):
-        self.__game_start_time = value
-
-    def get_game_start_time(self):
-        return self.__game_start_time
-
     # character
     def get_characters(self):
         return self.__character_seq_list
+
+    def get_small_characters(self):
+        return self.__small_character_seq_list
 
     def set_selected_character_index(self, value):
         self.__selected_character_index = value

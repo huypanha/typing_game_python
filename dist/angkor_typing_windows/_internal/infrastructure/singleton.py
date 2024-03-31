@@ -56,7 +56,7 @@ class Singleton:
                                                   self.sound_button_size)
 
         # background
-        self.default_back_img = pygame.transform.scale(pygame.image.load('src/back.jpg').convert(),
+        self.default_back_img = pygame.transform.scale(pygame.image.load('src/background.jpg').convert(),
                                                        self.get_screen_size())
 
     def get_screen(self):

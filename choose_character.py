@@ -1,6 +1,7 @@
 import pygame
 
 import play
+import select_num_letters
 from utils import scale_img as siw
 
 
@@ -8,6 +9,7 @@ class ChooseCharacterState:
     next_state = None
     clicked_submit_button = None
     selected_index = 0
+    is_back = False
 
     def __init__(self, singleton):
         self.singleton = singleton
@@ -34,9 +36,10 @@ class ChooseCharacterState:
         self.title_text_pos_y = -200
         self.ch_pos_y = -500
 
-        # play button
-        self.submit_button_img = siw.width(
-            pygame.image.load('src/enter_name/button_submit.png').convert_alpha(), 150)
+        # submit button
+        self.submit_button_normal_img = siw.width(pygame.image.load('src/submit_button.png').convert_alpha(), 150)
+        self.submit_button_img = self.submit_button_normal_img
+        self.submit_button_hover_img = siw.width(pygame.image.load('src/submit_button_hover.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.submit_button_img.get_width() / 2)
@@ -46,12 +49,24 @@ class ChooseCharacterState:
         # animate button
         self.button_pos_y = 800
 
+        # back button
+        self.back_btn_img = siw.width(pygame.image.load('src/back_button.png').convert_alpha(),
+                                      self.singleton.sound_button_size)
+        self.back_btn_pos_x = 20
+        self.back_btn_pos_y = (self.singleton.get_screen_size()[1] - 20 - self.back_btn_img.get_height())
+
     def handle_events(self, event):
         # handle click button
         if event.type == pygame.MOUSEBUTTONUP:
             if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.submit_button_img.get_width() and \
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.submit_button_img.get_height():
                 self.clicked_submit_button = True
+                self.singleton.play_click_button()
+
+            if self.back_btn_pos_x <= event.pos[0] <= self.back_btn_pos_x + self.back_btn_img.get_width() and \
+                    self.back_btn_pos_y <= event.pos[1] <= self.back_btn_pos_y + self.back_btn_img.get_height():
+                self.clicked_submit_button = True
+                self.is_back = True
                 self.singleton.play_click_button()
 
             # handle click for first character
@@ -74,6 +89,13 @@ class ChooseCharacterState:
                 self.selected_index = 1
                 self.singleton.play_click_button()
 
+        if event.type == pygame.MOUSEMOTION:
+            if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.submit_button_img.get_width() and \
+                    self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.submit_button_img.get_height():
+                self.submit_button_img = self.submit_button_hover_img
+            else:
+                self.submit_button_img = self.submit_button_normal_img
+
     def update(self):
         # animate title
         if self.title_text_pos_y < 50 and not self.clicked_submit_button:
@@ -87,10 +109,13 @@ class ChooseCharacterState:
         elif self.ch_back_pos_y >= -450 and self.clicked_submit_button:
             self.ch_back_pos_y -= 20
             if self.clicked_submit_button and self.ch_back_pos_y <= -450:
-                self.singleton.set_selected_character_index(self.selected_index)
-                self.singleton.stop_background_sound()
-                self.singleton.stop_birds_sound()
-                self.next_state = play.PlayState(self.singleton)
+                if self.is_back:
+                    self.next_state = select_num_letters.SelectNumLetters(self.singleton)
+                else:
+                    self.singleton.set_selected_character_index(self.selected_index)
+                    self.singleton.stop_background_sound()
+                    self.singleton.stop_birds_sound()
+                    self.next_state = play.PlayState(self.singleton)
 
         # animate character
         if self.ch_pos_y < 300 and not self.clicked_submit_button:
@@ -127,5 +152,10 @@ class ChooseCharacterState:
         self.singleton.get_screen().blit(self.ch2, ((self.singleton.get_screen_size()[0] * .72) -
                                                     (self.ch1.get_width() / 2), self.ch_pos_y))
 
+        # draw submit button
         self.singleton.get_screen().blit(self.submit_button_img,
                                          (self.button_pos_x, self.button_pos_y))
+
+        # draw back button
+        self.singleton.get_screen().blit(self.back_btn_img,
+                                         (self.back_btn_pos_x, self.back_btn_pos_y))

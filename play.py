@@ -15,6 +15,8 @@ class PlayState:
         self.timer_text = None
         self.pos_text = None
         self.time_img = None
+        self.played_finish_sound = False
+        self.other_player_next_typed_duration = 3
 
         # background
         self.sky_back_img = sih(pygame.image.load('src/play/sky.png').convert(), 500)
@@ -157,11 +159,15 @@ class PlayState:
         self.current_result_other_player_frame = 0
 
         # result button
-        self.result_play_again_btn_img = siw(pygame.image.load('src/play/play_again_btn.png').convert_alpha(), 240)
-        self.result_main_menu_btn_img = siw(pygame.image.load('src/play/main_menu.png').convert_alpha(), 240)
+        self.result_play_again_btn_normal_img = siw(pygame.image.load('src/play/play_again_btn.png').convert_alpha(), 240)
+        self.result_play_again_btn_img = self.result_play_again_btn_normal_img
+        self.result_play_again_btn_hover_img = siw(pygame.image.load('src/play/play_again_btn_hover.png').convert_alpha(), 240)
+        self.result_main_menu_btn_normal_img = siw(pygame.image.load('src/play/main_menu_btn.png').convert_alpha(), 240)
+        self.result_main_menu_btn_img = self.result_main_menu_btn_normal_img
+        self.result_main_menu_btn_hover_img = siw(pygame.image.load('src/play/main_menu_btn_hover.png').convert_alpha(), 240)
         self.result_btn_pos_x = 950
-        self.result_play_again_btn_pos_y = -(self.result_back_img.get_height() - 250)
-        self.result_main_menu_btn_pos_y = -(self.result_back_img.get_height() - 350)
+        self.result_play_again_btn_pos_y = -(self.result_back_img.get_height() - 130)
+        self.result_main_menu_btn_pos_y = -(self.result_back_img.get_height() - 230)
 
     def get_letters(self):
         # random new word
@@ -203,10 +209,25 @@ class PlayState:
                 self.next_state = select_num_letters.SelectNumLetters(self.singleton)
 
             # handle click play again button
-            # if (self.restart_btn_pos_x <= event.pos[0] <= self.restart_btn_pos_x + self.singleton.sound_button_size
-            #         and self.restart_btn_pos_y <= event.pos[1] <= self.restart_btn_pos_y +
-            #         self.singleton.sound_button_size):
-            #     self.singleton.play_click_button()
+            if (self.result_btn_pos_x <= event.pos[0] <= self.result_btn_pos_x
+                    + self.result_play_again_btn_img.get_width() and self.result_play_again_btn_pos_y
+                    <= event.pos[1] <= self.result_play_again_btn_pos_y + self.result_play_again_btn_img.get_height()):
+                self.singleton.play_click_button()
+                # stop playing background sound
+                self.singleton.stop_background_sound()
+                self.next_state = PlayState(self.singleton)
+
+            # handle click main menu button
+            if (self.result_btn_pos_x <= event.pos[0] <= self.result_btn_pos_x
+                    + self.result_main_menu_btn_img.get_width() and self.result_main_menu_btn_pos_y
+                    <= event.pos[1] <= self.result_main_menu_btn_pos_y + self.result_main_menu_btn_img.get_height()):
+                self.singleton.play_click_button()
+                # stop playing background sound
+                self.singleton.stop_background_sound()
+                # start play normal background sound and birds sound
+                self.singleton.play_background_sound()
+                self.singleton.play_birds_sound()
+                self.next_state = select_num_letters.SelectNumLetters(self.singleton)
 
         # get user typing
         if event.type == pygame.KEYDOWN:
@@ -216,6 +237,9 @@ class PlayState:
                 # (-self.road_width) - 1 because from debug when finished is 0 > -11701 >= -11700 is not true
                 if 0 > self.current_mov >= (-self.road_width) - 10:
                     if self.word_chars[self.current_typing_letter_index].lower() == str(event.unicode).lower():
+                        # play typing sound
+                        self.singleton.play_typing_sound()
+
                         # save typed letter
                         self.typed_letters.append(event.unicode)
                         if len(self.typed_letters) == self.singleton.get_num_letters():
@@ -265,6 +289,24 @@ class PlayState:
 
                     # re-render text surface
                     self.get_text_surface()
+
+        # hover
+        if event.type == pygame.MOUSEMOTION:
+            # handle hover on play again button
+            if (self.result_btn_pos_x <= event.pos[0] <= self.result_btn_pos_x
+                    + self.result_play_again_btn_img.get_width() and self.result_play_again_btn_pos_y
+                    <= event.pos[1] <= self.result_play_again_btn_pos_y + self.result_play_again_btn_img.get_height()):
+                self.result_play_again_btn_img = self.result_play_again_btn_hover_img
+            else:
+                self.result_play_again_btn_img = self.result_play_again_btn_normal_img
+
+            # handle hover on main menu button
+            if (self.result_btn_pos_x <= event.pos[0] <= self.result_btn_pos_x
+                    + self.result_main_menu_btn_img.get_width() and self.result_main_menu_btn_pos_y
+                    <= event.pos[1] <= self.result_main_menu_btn_pos_y + self.result_main_menu_btn_img.get_height()):
+                self.result_main_menu_btn_img = self.result_main_menu_btn_hover_img
+            else:
+                self.result_main_menu_btn_img = self.result_main_menu_btn_normal_img
 
     def update(self):
 
@@ -358,10 +400,11 @@ class PlayState:
             self.current_player_frame = (self.current_player_frame + 1) % len(self.player_seq)
 
         # random other player speed every 3 seconds and random typed correct and wrong words
-        if ((datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >= 3
-                and self.player_finish_time is None and self.other_player_finish_time is None):
+        if ((datetime.datetime.now() - self.last_update_other_player_speed).total_seconds() >=
+                self.other_player_next_typed_duration and self.player_finish_time is None
+                and self.other_player_finish_time is None):
             old_speed = self.other_player_speed
-            self.other_player_speed = rnd.randrange(3, 7)
+            self.other_player_speed = rnd.randrange(4, 9)
             self.last_update_other_player_speed = datetime.datetime.now()
 
             # used for count typed letters to calculate word per minutes
@@ -372,12 +415,20 @@ class PlayState:
                 # can add 1 or other characters when typed wrong word, because we just its length only
                 self.other_wrong_words.append(1)
 
+            # random next random speed and typed word for other player duration
+            self.other_player_next_typed_duration = rnd.randrange(2, 5)
+
         # decrease player speed
         if (datetime.datetime.now() - self.last_update_player_speed).total_seconds() >= 3 and self.player_speed >= 3:
             self.player_speed -= 1
             self.last_update_player_speed = datetime.datetime.now()
 
         if self.player_finish_time is not None and self.other_player_finish_time is not None:
+            # play finish sound
+            if not self.played_finish_sound:
+                self.singleton.play_finish_sound()
+                self.played_finish_sound = True
+
             # animate result background
             if self.result_back_img_pos_y <= 10:
                 self.result_back_img_pos_y += 20
@@ -400,7 +451,7 @@ class PlayState:
             if self.wpm > self.other_wpm:
                 # init result text
                 if self.result_text_player_pos_y is None and self.result_text_other_player_pos_y is None:
-                    self.result_text_player_pos_y = -(self.result_back_img.get_height() - 300)
+                    self.result_text_player_pos_y = -(self.result_back_img.get_height() - 200)
                     self.result_text_other_player_pos_y = -(self.result_back_img.get_height() - 370)
 
                 # init all player position
@@ -411,7 +462,7 @@ class PlayState:
                 # animate character position
                 if self.result_player_pos_y <= 190:
                     self.result_player_pos_y += 20
-                if self.result_other_player_pos_y <= 360:
+                if self.result_other_player_pos_y <= 350:
                     self.result_other_player_pos_y += 20
 
                 # animate result text
@@ -423,7 +474,7 @@ class PlayState:
                 # init result text
                 if self.result_text_player_pos_y is None and self.result_text_other_player_pos_y is None:
                     self.result_text_player_pos_y = -(self.result_back_img.get_height() - 370)
-                    self.result_text_other_player_pos_y = -(self.result_back_img.get_height() - 300)
+                    self.result_text_other_player_pos_y = -(self.result_back_img.get_height() - 200)
 
                 # init all player position
                 if self.result_player_pos_y is None and self.result_other_player_pos_y is None:
@@ -431,7 +482,7 @@ class PlayState:
                     self.result_other_player_pos_y = -(self.result_back_img.get_height() - 190)
 
                 # animate character position
-                if self.result_player_pos_y <= 360:
+                if self.result_player_pos_y <= 350:
                     self.result_player_pos_y += 20
                 if self.result_other_player_pos_y <= 190:
                     self.result_other_player_pos_y += 20
@@ -480,7 +531,6 @@ class PlayState:
         self.singleton.get_screen().blit(self.road, (self.current_mov, 20))
 
         # draw object when not finish the game
-
         if self.result_back_img_pos_y <= 10:
             self.singleton.get_screen().blit(self.timer_pos_back_img, (0, 0))
 
@@ -509,11 +559,14 @@ class PlayState:
                                                                (self.letter_box.get_height())))
             self.typing_letter_pos_x = self.first_letter_pos
             for t in range(self.singleton.get_num_letters()):
-                x = (self.typing_letter_pos_x + 22.5) - (self.typing_letters_text_surface[t].get_width() / 2)
-                self.singleton.get_screen().blit(self.typing_letters_text_surface[t],
-                                                 (x, self.singleton.get_screen_size()[1] -
-                                                  (self.typing_letters_text_surface[t].get_height() * 2)))
-                self.typing_letter_pos_x += 55
+                try:
+                    x = (self.typing_letter_pos_x + 22.5) - (self.typing_letters_text_surface[t].get_width() / 2)
+                    self.singleton.get_screen().blit(self.typing_letters_text_surface[t],
+                                                     (x, self.singleton.get_screen_size()[1] -
+                                                      (self.typing_letters_text_surface[t].get_height() * 2)))
+                    self.typing_letter_pos_x += 55
+                except (Exception,):
+                    print(self.typing_letters_text_surface)
 
             # restart button
             self.singleton.get_screen().blit(self.restart_btn_img, (self.restart_btn_pos_x, self.restart_btn_pos_y))
@@ -569,7 +622,8 @@ class PlayState:
                                              (620, self.result_text_other_player_pos_y))
 
             # draw time taken
-            self.singleton.get_screen().blit(self.result_player_time_taken_surface, (760, self.result_text_player_pos_y))
+            self.singleton.get_screen().blit(self.result_player_time_taken_surface,
+                                             (760, self.result_text_player_pos_y))
             self.singleton.get_screen().blit(self.result_other_player_time_taken_surface,
                                              (760, self.result_text_other_player_pos_y))
 

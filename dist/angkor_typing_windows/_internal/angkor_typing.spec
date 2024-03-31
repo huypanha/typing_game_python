@@ -2,7 +2,7 @@
 import glob
 
 datas = [
-('src/back.jpg', './src'),
+('src/background.jpg', './src'),
 ('src/logo.png', './src'),
 ('src/muted.png', './src'),
 ('src/play_button.png', './src'),
@@ -250,7 +250,7 @@ datas = [
 ('src/choose_character/back.png', './src/choose_character'),
 ('src/choose_character/selecting_back.png', './src/choose_character'),
 ('src/choose_character/title_text.png', './src/choose_character'),
-('src/enter_name/button_submit.png', './src/enter_name'),
+('src/enter_name/submit_button.png', './src/enter_name'),
 ('src/enter_name/enter_name_back.png', './src/enter_name'),
 ('src/letter_box/incorrect/3letters/1.png', './src/letter_box/incorrect/3letters'),
 ('src/letter_box/incorrect/3letters/2.png', './src/letter_box/incorrect/3letters'),

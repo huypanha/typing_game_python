@@ -16,13 +16,15 @@ class Singleton:
     __click_button_sound = None
     __default_sound_channel = None
     __birds_sound_channel = None
-    __num_sound_channel = 5
+    __num_sound_channel = 6
     """
     Number of channel:
-    1: background
-    2: second sound (birth)
-    3: button click
-    4: typing letter power and wrong
+    0: Background
+    1: Second sound (birth)
+    2: Button Click and typing sound
+    3: Countdown
+    4: Typing letter power and wrong
+    5: Finish sound
     """
 
     # sound button
@@ -62,7 +64,7 @@ class Singleton:
                                                   self.sound_button_size)
 
         # background
-        self.default_back_img = pygame.transform.scale(pygame.image.load('src/back.jpg').convert(),
+        self.default_back_img = pygame.transform.scale(pygame.image.load('src/background.jpg').convert(),
                                                        self.get_screen_size())
 
     def get_screen(self):
@@ -104,6 +106,14 @@ class Singleton:
     def play_click_button(self):
         if not self.__is_muted:
             pygame.mixer.Channel(2).play(self.__click_button_sound)
+
+    def play_typing_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(2).play(pygame.mixer.Sound("src/sounds/typing.ogg"))
+
+    def play_finish_sound(self):
+        if not self.__is_muted:
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound("src/sounds/finish.ogg"))
 
     def play_countdown_sound(self):
         if not self.__is_muted:
