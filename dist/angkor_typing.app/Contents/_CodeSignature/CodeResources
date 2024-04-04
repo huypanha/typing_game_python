@@ -4,13 +4,9 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/PythonApplet.icns</key>
-		<data>
-		9zRqvdRORUNhZjC9sNbLi26ck94=
-		</data>
 		<key>Resources/__boot__.py</key>
 		<data>
-		w1ZLSdBnravNdNfLtdedDyLhLzY=
+		HYrMUpGe/Qtby5Rhhc9MYMzpyvQ=
 		</data>
 		<key>Resources/__error__.sh</key>
 		<data>
@@ -36,6 +32,10 @@
 		<data>
 		6gAtPDHNShN3IV5TozMcYJ78F/A=
 		</data>
+		<key>Resources/icon.ico</key>
+		<data>
+		6PeIyGBChQ4LsCBHi0uI6l0OQ9k=
+		</data>
 		<key>Resources/include/python3.12/pyconfig.h</key>
 		<data>
 		4hsNjtwyBZjWd5mHvtpgTY/fzHQ=
@@ -43,14 +43,6 @@
 		<key>Resources/infrastructure/__init__.py</key>
 		<data>
 		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
-		</data>
-		<key>Resources/infrastructure/__pycache__/__init__.cpython-312.pyc</key>
-		<data>
-		5ul/Xt9L8eX150eiP2dVAgo11y8=
-		</data>
-		<key>Resources/infrastructure/__pycache__/singleton.cpython-312.pyc</key>
-		<data>
-		hQzIHWu21iB9B93zJWuom8p9SX8=
 		</data>
 		<key>Resources/infrastructure/singleton.py</key>
 		<data>
@@ -8046,7 +8038,7 @@
 		</data>
 		<key>Resources/lib/python312.zip</key>
 		<data>
-		n/7bm3Qrmg3MSd5+QhDe8nX9ZPE=
+		ViYyac713y1Uo/ZDZn8PxFPxZZo=
 		</data>
 		<key>Resources/lib/tcl8.6/auto.tcl</key>
 		<data>
@@ -9658,7 +9650,7 @@
 		</data>
 		<key>Resources/site.pyc</key>
 		<data>
-		N3jCNlaW5BWufEokHQH5rEzwDL8=
+		ltuH2n13XL3RZ4zeteGLFZqp1Dw=
 		</data>
 		<key>Resources/src/back_button.png</key>
 		<data>
@@ -10984,14 +10976,6 @@
 		<data>
 		Ms2YSp5c7Q67AYexLLElJ5Jcrso=
 		</data>
-		<key>Resources/src/sounds/playing1.ogg</key>
-		<data>
-		TSJXKurxbnpxmj2egfrIqIooHwc=
-		</data>
-		<key>Resources/src/sounds/playing2.ogg</key>
-		<data>
-		4G4upMIm6G8D+g5hqIy0CK5c66I=
-		</data>
 		<key>Resources/src/sounds/start_letter.ogg</key>
 		<data>
 		YrqJf9dnw6Qn/D98XSPjDW5NkVM=
@@ -11019,14 +11003,6 @@
 		<key>Resources/utils/__init__.py</key>
 		<data>
 		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
-		</data>
-		<key>Resources/utils/__pycache__/__init__.cpython-312.pyc</key>
-		<data>
-		38XVlFoVhuLsCybljnwyuyKkgzM=
-		</data>
-		<key>Resources/utils/__pycache__/scale_img.cpython-312.pyc</key>
-		<data>
-		rx+xNwb8PXUfFF8XgHcec0djRdE=
 		</data>
 		<key>Resources/utils/scale_img.py</key>
 		<data>
@@ -11117,26 +11093,15 @@
 			<key>requirement</key>
 			<string>cdhash H"ba2a47eb93a71926e4423d944e256150112bd165" or cdhash H"a16d6dbfcd89d6666f30b89ed695a26829dcb4d0" or cdhash H"7c2ac73d6b69afc286606b96921ac4d6bf9ed4d3" or cdhash H"b086603883b73edb8218644694e8c350fc668e27"</string>
 		</dict>
-		<key>Resources/PythonApplet.icns</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			9zRqvdRORUNhZjC9sNbLi26ck94=
-			</data>
-			<key>hash2</key>
-			<data>
-			eHksEElSftDQiDfMtwxo3rWW/gCukmOJdD1flXi1uxE=
-			</data>
-		</dict>
 		<key>Resources/__boot__.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			w1ZLSdBnravNdNfLtdedDyLhLzY=
+			HYrMUpGe/Qtby5Rhhc9MYMzpyvQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			4sCFzJ3KQCzgxAMsg6KypgA8Xgabk2UgVlN9xAZkeMY=
+			gXdmdAbKEYOhFYb7e49gjZG7NkVtkNGrFotuMb3lF+w=
 			</data>
 		</dict>
 		<key>Resources/__error__.sh</key>
@@ -11205,6 +11170,17 @@
 			iEKFKa7VRph0S8Thp/WclFR1F0+kA7OgBnHqFAIY0RY=
 			</data>
 		</dict>
+		<key>Resources/icon.ico</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			6PeIyGBChQ4LsCBHi0uI6l0OQ9k=
+			</data>
+			<key>hash2</key>
+			<data>
+			IfAC8XT+zmm2PEPU/4eYaYh1pEF+58InR4aJkmTkdpc=
+			</data>
+		</dict>
 		<key>Resources/include/python3.12/pyconfig.h</key>
 		<dict>
 			<key>hash</key>
@@ -11225,28 +11201,6 @@
 			<key>hash2</key>
 			<data>
 			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-			</data>
-		</dict>
-		<key>Resources/infrastructure/__pycache__/__init__.cpython-312.pyc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			5ul/Xt9L8eX150eiP2dVAgo11y8=
-			</data>
-			<key>hash2</key>
-			<data>
-			/VblDokJwoxYM40kql0YfMHOuVCtpCTFelLPoKIrQAs=
-			</data>
-		</dict>
-		<key>Resources/infrastructure/__pycache__/singleton.cpython-312.pyc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			hQzIHWu21iB9B93zJWuom8p9SX8=
-			</data>
-			<key>hash2</key>
-			<data>
-			vacOS8d6P/mUFzkVhj82avrTix/Ny105GyttK5tfZzA=
 			</data>
 		</dict>
 		<key>Resources/infrastructure/singleton.py</key>
@@ -33236,11 +33190,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			n/7bm3Qrmg3MSd5+QhDe8nX9ZPE=
+			ViYyac713y1Uo/ZDZn8PxFPxZZo=
 			</data>
 			<key>hash2</key>
 			<data>
-			JSDbrXkRg6tAq/7qTp4mX/OV23rf0hyGMLFG37rrk/s=
+			PTB7/1HyGhQe5hoaQ1w0Bufi7zAeqKb0kaHdUQZ1f5U=
 			</data>
 		</dict>
 		<key>Resources/lib/tcl8.6/auto.tcl</key>
@@ -37669,11 +37623,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			N3jCNlaW5BWufEokHQH5rEzwDL8=
+			ltuH2n13XL3RZ4zeteGLFZqp1Dw=
 			</data>
 			<key>hash2</key>
 			<data>
-			NIrSA6HzJ9+hy0ObHx2kSk7Mg729eDA63wqGXVy8CX8=
+			EQzp2JdeKZ0s8MTYiwhKe89oH9kfL2eUwhnClLeM4xQ=
 			</data>
 		</dict>
 		<key>Resources/src/back_button.png</key>
@@ -41185,28 +41139,6 @@
 			8fui+DH22fecG29cUJ8Wlp0qK0fm3/ehVTaph7zRtz0=
 			</data>
 		</dict>
-		<key>Resources/src/sounds/playing1.ogg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			TSJXKurxbnpxmj2egfrIqIooHwc=
-			</data>
-			<key>hash2</key>
-			<data>
-			nwzE7m3G3gYszzdnwT38XYqLO6fwUViVNUK06qWGWJE=
-			</data>
-		</dict>
-		<key>Resources/src/sounds/playing2.ogg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			4G4upMIm6G8D+g5hqIy0CK5c66I=
-			</data>
-			<key>hash2</key>
-			<data>
-			JnfMfKOgqKE90xKIRun+T5wJbmtB8fEB6ynBSTviO4s=
-			</data>
-		</dict>
 		<key>Resources/src/sounds/start_letter.ogg</key>
 		<dict>
 			<key>hash</key>
@@ -41282,28 +41214,6 @@
 			<key>hash2</key>
 			<data>
 			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-			</data>
-		</dict>
-		<key>Resources/utils/__pycache__/__init__.cpython-312.pyc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			38XVlFoVhuLsCybljnwyuyKkgzM=
-			</data>
-			<key>hash2</key>
-			<data>
-			BLqrYIvf3rggQiVJmH0LCIfD+XDub5BQ1OwaTtwagGs=
-			</data>
-		</dict>
-		<key>Resources/utils/__pycache__/scale_img.cpython-312.pyc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			rx+xNwb8PXUfFF8XgHcec0djRdE=
-			</data>
-			<key>hash2</key>
-			<data>
-			BPQ3wQMDG63x+AyQPzxbgIBgNIsw0TK7cV0GwvhRAZE=
 			</data>
 		</dict>
 		<key>Resources/utils/scale_img.py</key>

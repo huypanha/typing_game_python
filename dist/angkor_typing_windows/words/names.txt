@@ -52,7 +52,6 @@ Bora
 Thida
 Sopheaktra
 Sreypich
-Sopheakmonkol
 Davith
 Sophorn
 Rith
@@ -95,3 +94,8 @@ Sokchheng
 Sokheng
 Sokny
 LongE
+SokKley
+Phanny
+Ah Nea
+Nata
+Kimsean

@@ -11,6 +11,7 @@ class LoadingState:
         self.coefficient_progress = 0
         self.load_completed = False
         self.clicked_play_button = False
+        self.number_of_jobs = 480
 
         # play text logo
         self.logo_img = siw.width(pygame.image.load('src/logo.png').convert_alpha(), 1000)
@@ -19,7 +20,9 @@ class LoadingState:
         self.logo_pos_y = 50
 
         # play button
-        self.play_button_img = siw.width(pygame.image.load('src/play_button.png').convert_alpha(), 150)
+        self.play_button_normal_img = siw.width(pygame.image.load('src/play_button.png').convert_alpha(), 150)
+        self.play_button_img = self.play_button_normal_img
+        self.play_button_hover_img = siw.width(pygame.image.load('src/play_button_hover.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_button_img.get_width() / 2)
@@ -27,20 +30,47 @@ class LoadingState:
         # animate button
         self.button_pos_y = 800
 
+        # result characters
+        self.result_player_character = None
+        self.result_other_player_character = None
+
+        # text
+        self.font = pygame.font.Font('fonts/BigSpace.ttf', 40)
+        self.text_surface = self.font.render("LOADING...", True, "#9ade00")
+
+        # loading text
+        self.loading_text_img = pygame.image.load("src/loading_text.png")
+
     def load_images(self):
         for i in range(120):
             if len(self.singleton.get_characters()) == 0:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[0].append(siw.width(pygame.image.load(
-                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
-            self.coefficient_progress = i / 240
+                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
+            self.coefficient_progress = i / self.number_of_jobs
 
         for i in range(120):
             if len(self.singleton.get_characters()) == 1:
                 self.singleton.get_characters().append([])
             self.singleton.get_characters()[1].append(siw.width(pygame.image.load(
-                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 1200))
-            self.coefficient_progress = (i + 120) / 240
+                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 350))
+            self.coefficient_progress = (i + 120) / self.number_of_jobs
+
+        # get result character
+        for i in range(120):
+            if len(self.singleton.get_small_characters()) == 0:
+                self.singleton.get_small_characters().append([])
+            self.singleton.get_small_characters()[0].append(siw.width(pygame.image.load(
+                'src/characters/Monkey/Comp 1_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 200))
+            self.coefficient_progress = (i + 240) / self.number_of_jobs
+
+        # get result character
+        for i in range(120):
+            if len(self.singleton.get_small_characters()) == 1:
+                self.singleton.get_small_characters().append([])
+            self.singleton.get_small_characters()[1].append(siw.width(pygame.image.load(
+                'src/characters/Rabbit/Comp 2_{}.png'.format(str(i).rjust(5, "0"))).convert_alpha(), 200))
+            self.coefficient_progress = (i + 360) / self.number_of_jobs
 
             # when reached to the last image
             if i >= 119:
@@ -52,6 +82,13 @@ class LoadingState:
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_button_img.get_height():
                 self.clicked_play_button = True
                 self.singleton.play_click_button()
+
+        if event.type == pygame.MOUSEMOTION:
+            if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_button_img.get_width() and \
+                    self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_button_img.get_height():
+                self.play_button_img = self.play_button_hover_img
+            else:
+                self.play_button_img = self.play_button_normal_img
 
     def update(self):
         if self.load_completed:
@@ -77,6 +114,10 @@ class LoadingState:
             self.singleton.get_screen().blit(self.play_button_img,
                                              (self.button_pos_x, self.button_pos_y))
         else:
+            # Draw loading text
+            self.singleton.get_screen().blit(self.loading_text_img, ((self.singleton.get_screen_size()[0] / 2) -
+                                                                 (self.loading_text_img.get_width() / 2), 440))
+
             # Draw progress bar
             pygame.draw.rect(self.singleton.get_screen(), "orange",
                              (200, 500, self.singleton.get_screen_size()[0] - 400, 30), 3, border_radius=50)

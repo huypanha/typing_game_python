@@ -6,10 +6,23 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>angkor_typing</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>****</string>
+				<string>fold</string>
+				<string>disk</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>angkor_typing</string>
 	<key>CFBundleIconFile</key>
-	<string>PythonApplet.icns</string>
+	<string>icon.ico</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.pythonmac.unspecified.angkor_typing</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -43,7 +56,7 @@
 		<key>alias</key>
 		<false/>
 		<key>argv_emulation</key>
-		<false/>
+		<true/>
 		<key>emulate_shell_environment</key>
 		<false/>
 		<key>no_chdir</key>

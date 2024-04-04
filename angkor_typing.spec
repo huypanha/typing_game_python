@@ -5,7 +5,10 @@ datas = [
 ('src/background.jpg', './src'),
 ('src/logo.png', './src'),
 ('src/muted.png', './src'),
+('src/back_button.png', './src'),
+('src/loading_text.png', './src'),
 ('src/play_button.png', './src'),
+('src/play_button_hover.png', './src'),
 ('src/unmuted.png', './src'),
 ('src/characters/Monkey/Comp 1_00000.png', './src/characters/Monkey'),
 ('src/characters/Monkey/Comp 1_00001.png', './src/characters/Monkey'),
@@ -250,7 +253,6 @@ datas = [
 ('src/choose_character/back.png', './src/choose_character'),
 ('src/choose_character/selecting_back.png', './src/choose_character'),
 ('src/choose_character/title_text.png', './src/choose_character'),
-('src/enter_name/submit_button.png', './src/enter_name'),
 ('src/enter_name/enter_name_back.png', './src/enter_name'),
 ('src/letter_box/incorrect/3letters/1.png', './src/letter_box/incorrect/3letters'),
 ('src/letter_box/incorrect/3letters/2.png', './src/letter_box/incorrect/3letters'),
@@ -292,6 +294,13 @@ datas = [
 ('src/play/2.png', './src/play'),
 ('src/play/3.png', './src/play'),
 ('src/play/GO.png', './src/play'),
+('src/play/main_menu_btn.png', './src/play'),
+('src/play/main_menu_btn_hover.png', './src/play'),
+('src/play/other_player_name.png', './src/play'),
+('src/play/play_again_btn.png', './src/play'),
+('src/play/play_again_btn_hover.png', './src/play'),
+('src/play/player_name.png', './src/play'),
+('src/play/race_results.png', './src/play'),
 ('src/play/restart_button.png', './src/play'),
 ('src/play/road.png', './src/play'),
 ('src/play/sky.png', './src/play'),
@@ -310,9 +319,14 @@ datas = [
 ('src/sounds/button_click.ogg', './src/sounds'),
 ('src/sounds/countdown.ogg', './src/sounds'),
 ('src/sounds/countdown_end.ogg', './src/sounds'),
+('src/sounds/finish.ogg', './src/sounds'),
+('src/sounds/last_letter.ogg', './src/sounds'),
 ('src/sounds/playing.ogg', './src/sounds'),
-('src/sounds/playing1.ogg', './src/sounds'),
-('src/sounds/playing2.ogg', './src/sounds'),
+('src/sounds/start_letter.ogg', './src/sounds'),
+('src/sounds/typed_wrong.ogg', './src/sounds'),
+('src/sounds/typing.ogg', './src/sounds'),
+('src/submit_button.png', './src'),
+('src/submit_button_hover.png', './src'),
 ('fonts/*', "./fonts"),
 ('infrastructure/*', "./infrastructure"),
 ('utils/*', "./utils"),
@@ -331,6 +345,7 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    icon='icon.ico'
 )
 pyz = PYZ(a.pure)
 
@@ -350,6 +365,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='icon.ico',
+    onefile=True
 )
 coll = COLLECT(
     exe,

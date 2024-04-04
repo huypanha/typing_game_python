@@ -1,7 +1,8 @@
 import pygame
 
+import choose_character
+import enter_name
 from utils import scale_img as siw
-from choose_character import ChooseCharacterState
 
 
 class SelectNumLetters:
@@ -10,6 +11,7 @@ class SelectNumLetters:
 
     def __init__(self, singleton):
         self.singleton = singleton
+        self.is_back = False
 
         # title
         self.title_img = siw.width(
@@ -33,8 +35,9 @@ class SelectNumLetters:
         self.title_img_pos_y = -200
 
         # play button
-        self.play_btn_img = siw.width(
-            pygame.image.load('src/play_button.png').convert_alpha(), 150)
+        self.play_btn_normal_img = siw.width(pygame.image.load('src/play_button.png').convert_alpha(), 150)
+        self.play_btn_img = self.play_btn_normal_img
+        self.play_btn_hover_img = siw.width(pygame.image.load('src/play_button_hover.png').convert_alpha(), 150)
 
         # use for handle click event
         self.button_pos_x = (self.singleton.get_screen_size()[0] / 2) - (self.play_btn_img.get_width() / 2)
@@ -44,12 +47,24 @@ class SelectNumLetters:
         # animate button
         self.button_pos_y = 800
 
+        # back button
+        self.back_btn_img = siw.width(pygame.image.load('src/back_button.png').convert_alpha(),
+                                      self.singleton.sound_button_size)
+        self.back_btn_pos_x = 20
+        self.back_btn_pos_y = (self.singleton.get_screen_size()[1] - 20 - self.back_btn_img.get_height())
+
     def handle_events(self, event):
         # handle click button
         if event.type == pygame.MOUSEBUTTONUP:
             if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_btn_img.get_width() and \
                     self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_btn_img.get_height():
                 self.clicked_play_button = True
+                self.singleton.play_click_button()
+
+            if self.back_btn_pos_x <= event.pos[0] <= self.back_btn_pos_x + self.back_btn_img.get_width() and \
+                    self.back_btn_pos_y <= event.pos[1] <= self.back_btn_pos_y + self.back_btn_img.get_height():
+                self.clicked_play_button = True
+                self.is_back = True
                 self.singleton.play_click_button()
 
             # handle click for 3 letters
@@ -75,6 +90,13 @@ class SelectNumLetters:
                     self.row2_btn_pos_y <= event.pos[1] <= self.row2_btn_pos_y + self.btn6_letters.get_height():
                 self.change_select_button(6)
                 self.singleton.play_click_button()
+
+        if event.type == pygame.MOUSEMOTION:
+            if self.button_pos_x <= event.pos[0] <= self.button_pos_x + self.play_btn_img.get_width() and \
+                    self.button_pos_y <= event.pos[1] <= self.button_pos_y + self.play_btn_img.get_height():
+                self.play_btn_img = self.play_btn_hover_img
+            else:
+                self.play_btn_img = self.play_btn_normal_img
 
     def change_select_button(self, new_number):
         # change old selected button to normal state
@@ -127,7 +149,10 @@ class SelectNumLetters:
         elif self.row2_btn_pos_y >= -250 and self.clicked_play_button:
             self.row2_btn_pos_y -= 20
             if self.clicked_play_button and self.row2_btn_pos_y <= -250:
-                self.next_state = ChooseCharacterState(self.singleton)
+                if self.is_back:
+                    self.next_state = enter_name.EnterNameState(self.singleton)
+                else:
+                    self.next_state = choose_character.ChooseCharacterState(self.singleton)
 
         # animate button submit
         if self.button_pos_y > 500 and not self.clicked_play_button:
@@ -147,5 +172,10 @@ class SelectNumLetters:
         self.singleton.get_screen().blit(self.btn5_letters, (self.left_pos_x, self.row2_btn_pos_y))
         self.singleton.get_screen().blit(self.btn6_letters, (self.right_pos_x, self.row2_btn_pos_y))
 
+        # draw button
         self.singleton.get_screen().blit(self.play_btn_img,
                                          (self.button_pos_x, self.button_pos_y))
+
+        # draw back button
+        self.singleton.get_screen().blit(self.back_btn_img,
+                                         (self.back_btn_pos_x, self.back_btn_pos_y))

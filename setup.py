@@ -16,7 +16,10 @@ DATA_FILES = [
     ("utils", glob.glob('utils/*')),
     ("words", glob.glob('words/*')),
 ]
-OPTIONS = {}
+OPTIONS = {
+    'argv_emulation': True,
+    'iconfile': 'icon.ico',
+}
 
 setup(
     app=APP,
