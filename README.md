@@ -1,4 +1,4 @@
-<img src="icon.ico" width="100%">
+<img src="icon.ico" width="500px">
 
 # Typing Game
 The reason for creating this game is to create a project for the exam only. So everyone feels free to use. Everyone can also participate in the development freely by pull request.
