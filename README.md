@@ -1,3 +1,5 @@
+<img src="icon.ico" width="100%">
+
 # Typing Game
 The reason for creating this game is to create a project for the exam only. So everyone feels free to use. Everyone can also participate in the development freely by pull request.
 
@@ -22,11 +24,11 @@ python3 angkor_typing.py
 ```
 
 ## Download
-###  <img src="icon.ico" width="30"> [For Windows](dist/angkor_typing_windows)
-### <img src="icon.ico" width="30"> [For Mac](dist/angkor_typing.app)
+###  <img src="icon.ico" width="30"> [For Windows](https://raw.github.com/huypanha/typing_game_python.git/dist/angkor_typing_windows.zip)
+### <img src="icon.ico" width="30"> [For Mac](https://raw.github.com/huypanha/typing_game_python.git/dist/angkor_typing_windows.zipdist/angkor_typing.zip)
 
 ## Support Us
-<a href="https://fb.me/angkorsystems"><img src="https://www.facebook.com/images/fb_icon_325x325.png" width="30"> : Angkor System</a>
+<a href="https://fb.me/angkorsystems"><img src="https://www.facebook.com/images/fb_icon_325x325.png" width="30"> Angkor System</a>
 
 
 #### Please ⭐ the repo to support our project
