@@ -24,8 +24,8 @@ python3 angkor_typing.py
 ```
 
 ## Download
-###  <img src="icon.ico" width="30"> [For Windows](./dist/angkor_typing_windows.zip)
-### <img src="icon.ico" width="30"> [For Mac](./dist/angkor_typing_windows.zipdist/angkor_typing.zip)
+###  <img src="icon.ico" width="30"> [For Windows](./dist)
+### <img src="icon.ico" width="30"> [For Mac](./dist)
 
 ## Support Us
 <a href="https://fb.me/angkorsystems"><img src="https://www.facebook.com/images/fb_icon_325x325.png" width="30"> Angkor System</a>
