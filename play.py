@@ -371,7 +371,7 @@ class PlayState:
                 self.timer_text = self.font.render("{}".format(time_dif.strftime("%M:%S")), True, (255, 255, 255))
 
             # create pos text
-            if -(self.current_mov - 700) >= (self.other_player_pos - 100):
+            if -self.current_mov >= self.other_player_pos:
                 self.pos_text = self.font.render("1/2", True, (255, 255, 255))
             else:
                 self.pos_text = self.font.render("2/2", True, (255, 255, 255))
@@ -444,8 +444,11 @@ class PlayState:
             self.time_taken = self.player_finish_time - self.start_time
             self.other_time_taken = self.other_player_finish_time - self.start_time
             self.wpm = len(self.typed_words) / (self.time_taken.total_seconds() / 60)
-            self.other_wpm = len(self.typed_words) / (self.other_time_taken.total_seconds() / 60)
-            self.result_player_accuracy = 100 - (len(self.wrong_words) * 100) / len(self.typed_words)
+            self.other_wpm = len(self.other_typed_words) / (self.other_time_taken.total_seconds() / 60)
+            if len(self.typed_words) == 0:
+                self.result_player_accuracy = 0
+            else:
+                self.result_player_accuracy = 100 - (len(self.wrong_words) * 100) / len(self.typed_words)
             self.result_other_player_accuracy = 100 - (len(self.other_wrong_words) * 100) / len(self.other_typed_words)
 
             if self.wpm > self.other_wpm:
